@@ -1,0 +1,9 @@
+# Requires Python 3.10-3.12 (TensorFlow has no wheel for 3.13/3.14 yet).
+tensorflow==2.16.*
+pandas==2.2.*
+numpy==1.26.*
+scikit-learn==1.4.*
+matplotlib==3.8.*
+pyyaml==6.*
+pillow==10.*
+pytest==8.*

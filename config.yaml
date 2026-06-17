@@ -1,0 +1,14 @@
+seed: 42
+classes: [Healthy, InterTurn, Demagnetization, Overload]
+signal_types: [current, vibration]
+window_seconds: 0.5      # length of each signal segment
+overlap: 0.5             # fractional overlap between consecutive windows
+target_fs: 10000         # Hz; signals resampled to this before CWT
+image_size: 224          # square PNG side
+wavelet: amor            # MATLAB cwt wavelet name
+paths:
+  raw: data/raw
+  scalograms: data/scalograms
+  manifest: data/manifest.csv
+  models: models
+  results: results
