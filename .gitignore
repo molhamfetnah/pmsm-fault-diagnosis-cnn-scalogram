@@ -9,3 +9,5 @@ slprj/
 
 # nested git repo — keep it independent, don't absorb it
 simscape-pmsm/
+data/manifest.csv
+data/segments/

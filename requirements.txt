@@ -2,8 +2,11 @@
 tensorflow==2.16.*
 pandas==2.2.*
 numpy==1.26.*
+scipy==1.13.*          # signal decimation for real-data ingestion
 scikit-learn==1.4.*
 matplotlib==3.8.*
+PyWavelets==1.6.*      # Python CWT scalogram path (no MATLAB needed)
+npTDMS==1.9.*          # read KAIST .tdms recordings
 pyyaml==6.*
 pillow==10.*
 pytest==8.*

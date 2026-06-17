@@ -14,7 +14,10 @@ def add_record(df, *, signal_id, source, signal_type, klass, severity, fs,
            "class": klass, "severity": severity, "fs": fs,
            "dataset_name": dataset_name, "recording_id": recording_id,
            "split": "", "scalogram_path": ""}
-    return pd.concat([df, pd.DataFrame([row])], ignore_index=True)
+    new = pd.DataFrame([row], columns=MANIFEST_COLUMNS)
+    if df.empty:
+        return new
+    return pd.concat([df, new], ignore_index=True)
 
 
 def save_manifest(df, path):

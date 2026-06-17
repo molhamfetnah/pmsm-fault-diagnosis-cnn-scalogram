@@ -8,9 +8,20 @@ A **university research project**, not a conventional software codebase. The goa
 
 > simulate/collect motor signals → apply Continuous Wavelet Transform → render **Wavelet Scalogram** images → train a **CNN** to classify operating states and detect faults (e.g. healthy, overload, inter-turn fault).
 
-Students: ملهم فتنة (Mulham Fetna) and محمد زين قباني. Deliverables are a labelled image dataset, training code, a final CNN model, a 25–35 page report, and a 15–20 slide presentation. Tooling is intended to be MATLAB (Deep Learning Toolbox + Wavelet Toolbox) and/or Python (TensorFlow/Keras). As of now the repo contains the **signal-source / simulation** stage only — the scalogram-generation and CNN stages are not yet implemented.
+Students: ملهم فتنة (Mulham Fetna) and محمد زين قباني. Deliverables are a labelled image dataset, training code, a final CNN model, a 25–35 page report, and a 15–20 slide presentation.
 
-There is no build, lint, or test setup. Most files are research artifacts (PDFs, saved MathWorks doc pages, notes).
+**The full pipeline is now implemented in Python** (`python/`), runs end-to-end without MATLAB, and is unit-tested. MATLAB scripts (`matlab/`) remain as an alternative scalogram/simulation path. See `README.md` for the architecture and `docs/superpowers/{specs,plans}/` for the design rationale and step-by-step plan.
+
+### Working on the Python pipeline
+
+- Environment: **Python 3.10–3.12** in a venv (TensorFlow has no wheel for 3.13/3.14). `make setup` builds `.venv` on `python3.10`.
+- Commands (via `Makefile`): `make test`, `make demo` (synthetic end-to-end), `make train SIGNAL=current EPOCHS=20`, `make evaluate SIGNAL=current`. Direct: `.venv/bin/python -m python.<module>`.
+- Single test: `.venv/bin/python -m pytest python/tests/test_split.py::test_no_recording_spans_splits -v`.
+- `config.yaml` holds every parameter; all modules read it. `data/manifest.csv` is the single source of truth linking signal → scalogram → label/split.
+- TF-dependent tests use `pytest.importorskip("tensorflow")` so they skip when TF is absent; keep TF imports lazy inside functions where a pure-logic helper must stay importable without TF.
+- `data/`, `models/*.keras`, and `simscape-pmsm/` are gitignored. The KAIST dataset goes in `data/raw/mendeley_pmsm/` (see `docs/data-audit.md`).
+
+Most root files remain research artifacts (PDFs, saved MathWorks doc pages, notes).
 
 ## Repository layout
 

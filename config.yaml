@@ -6,6 +6,8 @@ overlap: 0.5             # fractional overlap between consecutive windows
 target_fs: 10000         # Hz; signals resampled to this before CWT
 image_size: 224          # square PNG side
 wavelet: amor            # MATLAB cwt wavelet name
+wavelet_py: cmor1.5-1.0  # PyWavelets complex-Morlet (Python scalogram path)
+n_scales: 128            # number of CWT scales for the Python scalogram
 paths:
   raw: data/raw
   scalograms: data/scalograms
