@@ -1,0 +1,11 @@
+data/raw/
+data/scalograms/
+models/*.keras
+models/*.h5
+__pycache__/
+.venv/
+*.slxc
+slprj/
+
+# nested git repo — keep it independent, don't absorb it
+simscape-pmsm/
