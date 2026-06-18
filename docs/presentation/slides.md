@@ -51,18 +51,29 @@ Conv → ReLU → Pool → Flatten → Dense → Softmax.
 
 ---
 
-## Results
-Accuracy + confusion matrix (`results/confusion_current.png`).
+## Results (real KAIST data)
+Held-out recordings, Healthy vs Inter-turn. Balanced acc / macro-F1 (test set is imbalanced).
+
+| Channel | Bal-acc | Macro-F1 | Healthy rec. | Inter-turn rec. |
+|---|---|---|---|---|
+| **Vibration** | **1.00** | **1.00** | 1.00 | 1.00 |
+| Current | 0.69 | 0.49 | 1.00 | 0.37 |
+
+![](../../results/confusion_real_2class.png)
 
 ---
 
 ## Analysis
-Per-class F1; sim vs real; overfitting controls.
+- **Vibration ≫ current** for inter-turn detection (richer time-frequency content).
+- Class balancing prevents majority collapse (current: 0.80 "accuracy" → honest 0.69 bal-acc).
+- Report balanced accuracy / macro-F1, not raw accuracy, under imbalance.
+- ⚠️ Only 4 healthy recordings → can't yet exclude a recording-identity shortcut.
 
 ---
 
 ## Conclusions & Future Work
-Per-channel models today; paired fusion dataset next.
+- Vibration scalograms + CNN detect inter-turn faults; current is weak.
+- Next: more independent healthy/fault recordings; current+vibration **fusion**; severity-aware classes.
 
 ---
 

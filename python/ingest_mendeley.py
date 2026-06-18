@@ -76,8 +76,15 @@ def ingest(cfg, raw_subdir="mendeley_pmsm"):
         if q > 1:
             sig = decimate(sig, q, ftype="fir")
         rec_id = "mendeley-" + os.path.splitext(os.path.basename(path))[0]
-        for k, seg in enumerate(segment_signal(sig, fs=target_fs,
-                                window_seconds=cfg["window_seconds"], overlap=cfg["overlap"])):
+        cap = cfg.get("max_segments_per_recording")
+        segs = list(segment_signal(sig, fs=target_fs,
+                    window_seconds=cfg["window_seconds"], overlap=cfg["overlap"]))
+        if cap:
+            # Even stride across the recording so kept segments span the whole run,
+            # not just its first seconds.
+            step = max(1, len(segs) // cap)
+            segs = segs[::step][:cap]
+        for k, seg in enumerate(segs):
             sid = f"{rec_id}-seg{k}"
             np.save(os.path.join(seg_dir, sid + ".npy"), seg)
             df = add_record(df, signal_id=sid, source="real", signal_type=modality,

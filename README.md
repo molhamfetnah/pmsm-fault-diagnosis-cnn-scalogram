@@ -140,18 +140,49 @@ Makefile             # convenience targets
 
 ## 5. Results
 
-On the **synthetic** dataset (4 classes, 456 segments, leakage-free split) the
-baseline CNN reaches **100% test accuracy**.
+### 5.1 Real data (KAIST PMSM, Healthy vs Inter-turn)
 
-![Confusion matrix](results/confusion_current.png)
+Trained and evaluated on the real **KAIST dataset** (Mendeley `rgn5brrgrn`,
+1.0 + 1.5 kW), 3,150 scalogram segments. Train/val are **class-balanced** by
+undersampling the majority class; the **test split keeps its natural
+distribution** and uses **held-out recordings** (leakage-free, grouped by
+`recording_id`). Because the test set is imbalanced (50 Healthy / 200
+Inter-turn), the headline metrics are **balanced accuracy** and **2-class
+macro-F1**, not raw accuracy.
 
-**Interpretation — read this.** A perfect score here means the *software
-pipeline is correct end-to-end* (signal → scalogram → CNN → metrics, with no
-train/test leakage), **not** that the problem is hard. The synthetic fault
-signatures are deliberately separable. Meaningful difficulty — and the numbers
-worth reporting in the paper — come from the **real** datasets in §3. The
-pipeline is identical for synthetic and real data; only the ingestion step
-differs.
+| Channel       | Test acc | Balanced acc | Macro-F1 | Healthy recall | Inter-turn recall |
+|---------------|----------|--------------|----------|----------------|-------------------|
+| **Vibration** | **1.00** | **1.00**     | **1.00** | 1.00           | 1.00              |
+| Current       | 0.50     | 0.69         | 0.49     | 1.00           | 0.37              |
+
+![Real confusion matrices](results/confusion_real_2class.png)
+
+**Real scalograms** (note how the inter-turn fault enriches the vibration
+time-frequency content):
+
+![Real scalograms](results/example_scalograms_real.png)
+
+**What this shows.** *Vibration* scalograms separate healthy from inter-turn
+faulty motors perfectly on held-out recordings, while *current* scalograms carry
+a much weaker inter-turn signature at these severities (the current model catches
+every healthy case but misses ~63 % of faults). Vibration being the stronger
+channel for inter-turn detection is consistent with the motor-fault literature.
+
+> **Limitation (important).** The dataset has only **4 distinct healthy
+> recordings** (2 train / 1 val / 1 test). A perfect vibration score therefore
+> cannot fully rule out the CNN keying on recording-specific characteristics
+> rather than generalizable fault features. Confirming generalization needs more
+> independent healthy recordings (more motors, loads, sessions). See
+> `results/summary.md`.
+
+### 5.2 Synthetic data (software validation, 4 classes)
+
+On the **synthetic** generator (4 classes incl. Demagnetization & Overload, which
+the real data lacks) the baseline CNN reaches **100 % test accuracy**. This only
+confirms the *software pipeline is correct end-to-end* (signal → scalogram → CNN
+→ metrics, no leakage) — **not** that the task is easy; the synthetic signatures
+are deliberately separable. The pipeline is identical for synthetic and real
+data; only the ingestion step differs.
 
 ---
 

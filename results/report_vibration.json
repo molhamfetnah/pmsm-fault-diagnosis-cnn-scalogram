@@ -1,14 +1,14 @@
 {
   "Healthy": {
-    "precision": 0.2840909090909091,
+    "precision": 1.0,
     "recall": 1.0,
-    "f1-score": 0.4424778761061947,
+    "f1-score": 1.0,
     "support": 50.0
   },
   "InterTurn": {
     "precision": 1.0,
-    "recall": 0.37,
-    "f1-score": 0.5401459854014599,
+    "recall": 1.0,
+    "f1-score": 1.0,
     "support": 200.0
   },
   "Demagnetization": {
@@ -24,21 +24,21 @@
     "support": 0.0
   },
   "micro avg": {
-    "precision": 0.496,
-    "recall": 0.496,
-    "f1-score": 0.496,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
     "support": 250.0
   },
   "macro avg": {
-    "precision": 0.3210227272727273,
-    "recall": 0.3425,
-    "f1-score": 0.24565596537691364,
+    "precision": 0.5,
+    "recall": 0.5,
+    "f1-score": 0.5,
     "support": 250.0
   },
   "weighted avg": {
-    "precision": 0.8568181818181819,
-    "recall": 0.496,
-    "f1-score": 0.5206123635424068,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
     "support": 250.0
   }
 }

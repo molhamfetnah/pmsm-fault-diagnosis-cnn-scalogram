@@ -4,6 +4,8 @@ signal_types: [current, vibration]
 window_seconds: 0.5      # length of each signal segment
 overlap: 0.5             # fractional overlap between consecutive windows
 target_fs: 10000         # Hz; signals resampled to this before CWT
+max_segments_per_recording: 50  # cap segments kept per recording (bounds scalogram count)
+balance_train: true      # undersample majority class in train/val (test stays natural)
 image_size: 224          # square PNG side
 wavelet: amor            # MATLAB cwt wavelet name
 wavelet_py: cmor1.5-1.0  # PyWavelets complex-Morlet (Python scalogram path)

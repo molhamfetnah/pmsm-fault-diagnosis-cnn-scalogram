@@ -1,0 +1,60 @@
+cff-version: 1.2.0
+title: >-
+  PMSM Fault Diagnosis using Wavelet Scalograms and
+  Convolutional Neural Networks
+message: >-
+  If you use this software or its pipeline in your research,
+  please cite it using the metadata below.
+type: software
+authors:
+  - given-names: Mulham
+    family-names: Fetna
+    alias: molhamfetnah
+  - given-names: Mohammad Zein
+    family-names: Qabbani
+repository-code: >-
+  https://github.com/molhamfetnah/pmsm-fault-diagnosis-cnn-scalogram
+abstract: >-
+  A reproducible research pipeline that diagnoses faults in
+  Permanent Magnet Synchronous Motors (PMSM) by converting
+  motor current and vibration signals into Continuous Wavelet
+  Transform (CWT) scalogram images and classifying them with a
+  Convolutional Neural Network (CNN). The pipeline runs
+  end-to-end in Python (no MATLAB required), ships a synthetic
+  signal generator for instant validation, and provides loaders
+  for public PMSM datasets. Fault classes include healthy,
+  inter-turn stator short, demagnetization, and overload.
+keywords:
+  - PMSM
+  - fault diagnosis
+  - condition monitoring
+  - continuous wavelet transform
+  - scalogram
+  - convolutional neural network
+  - motor current signature analysis
+  - inter-turn fault
+license: MIT
+references:
+  - type: data
+    title: >-
+      Vibration and Current Dataset of Three-Phase PMSM with
+      Stator Faults
+    authors:
+      - name: Korea Advanced Institute of Science and Technology (KAIST)
+    doi: 10.17632/rgn5brrgrn.5
+    url: https://data.mendeley.com/datasets/rgn5brrgrn/5
+    license: CC-BY-4.0
+    notes: >-
+      Primary real dataset (current @ 100 kHz, vibration @
+      25.6 kHz); normal, inter-turn, and inter-coil stator
+      faults.
+  - type: article
+    title: >-
+      Interior PMSM Stator Winding Fault Modelling
+    authors:
+      - family-names: Otava
+        given-names: Lukáš
+    doi: 10.1016/j.ifacol.2015.07.055
+    notes: >-
+      Basis for the Simscape inter-turn fault model in
+      simscape-pmsm/.

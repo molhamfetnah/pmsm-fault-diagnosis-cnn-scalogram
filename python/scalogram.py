@@ -49,11 +49,12 @@ def generate_scalograms(cfg):
     size = cfg["image_size"]
     for i in range(len(df)):
         sid = df.at[i, "signal_id"]
-        sig = np.load(os.path.join(seg_dir, sid + ".npy"))
         out_path = os.path.join(cfg["paths"]["scalograms"], df.at[i, "signal_type"],
                                 df.at[i, "class"], sid + ".png")
-        save_scalogram_png(sig, df.at[i, "fs"], out_path, image_size=size,
-                           wavelet=wavelet, n_scales=n_scales)
+        if not os.path.exists(out_path):  # resumable: skip already-rendered images
+            sig = np.load(os.path.join(seg_dir, sid + ".npy"))
+            save_scalogram_png(sig, df.at[i, "fs"], out_path, image_size=size,
+                               wavelet=wavelet, n_scales=n_scales)
         df.at[i, "scalogram_path"] = out_path
     save_manifest(df, cfg["paths"]["manifest"])
     return df

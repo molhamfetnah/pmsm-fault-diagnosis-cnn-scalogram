@@ -11,8 +11,12 @@ from python.data_loader import make_dataset
 
 
 def metrics_from_predictions(y_true, y_pred, class_names):
-    cm = confusion_matrix(y_true, y_pred, labels=list(range(len(class_names))))
-    report = classification_report(y_true, y_pred, target_names=class_names,
+    labels = list(range(len(class_names)))
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
+    # labels= keeps the report aligned with class_names even when a split only
+    # contains a subset of classes (real data covers Healthy + InterTurn, not all 4).
+    report = classification_report(y_true, y_pred, labels=labels,
+                                   target_names=class_names,
                                    output_dict=True, zero_division=0)
     return cm, report
 

@@ -24,3 +24,30 @@ def test_all_rows_assigned():
     df = assign_splits(_df(), seed=42)
     assert set(df["split"].unique()) <= {"train", "val", "test"}
     assert (df["split"] != "").all()
+
+
+def _small_df(n_recordings):
+    df = new_manifest()
+    for r in range(n_recordings):
+        df = add_record(df, signal_id=f"H-{r}", source="real", signal_type="current",
+                        klass="Healthy", severity=0.0, fs=10000, dataset_name="ds",
+                        recording_id=f"H-rec{r}")
+    return df
+
+
+def test_small_class_reaches_every_split():
+    # 4 recordings must still land one each in val and test, not all in train.
+    df = assign_splits(_small_df(4), seed=42)
+    assert set(df["split"].unique()) == {"train", "val", "test"}
+
+
+def test_three_recordings_one_per_split():
+    df = assign_splits(_small_df(3), seed=42)
+    assert sorted(df["split"].tolist()) == ["test", "train", "val"]
+
+
+def test_two_recordings_no_empty_split_forced():
+    # Too few to fill all splits; must not crash or duplicate.
+    df = assign_splits(_small_df(2), seed=42)
+    assert len(df) == 2
+    assert df.groupby("recording_id")["split"].nunique().eq(1).all()
