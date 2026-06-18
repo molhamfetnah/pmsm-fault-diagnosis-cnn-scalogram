@@ -12,5 +12,12 @@
     "macro_f1_2class": 1.0,
     "healthy_recall": 1.0,
     "interturn_recall": 1.0
+  },
+  "fusion": {
+    "accuracy": 0.8,
+    "balanced_accuracy": 0.875,
+    "macro_f1_2class": 0.762,
+    "healthy_recall": 1.0,
+    "interturn_recall": 0.75
   }
 }

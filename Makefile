@@ -6,7 +6,7 @@ PIP := .venv/bin/pip
 SIGNAL ?= current
 EPOCHS ?= 20
 
-.PHONY: help setup test demo simulate scalograms split train evaluate report clean
+.PHONY: help setup test demo simulate scalograms split train train-fusion evaluate report clean
 
 help:
 	@echo "Targets:"
@@ -18,6 +18,7 @@ help:
 	@echo "  split      assign leakage-free train/val/test splits"
 	@echo "  train      train the CNN     (SIGNAL=current|vibration EPOCHS=20)"
 	@echo "  evaluate   evaluate on test  (SIGNAL=current|vibration)"
+	@echo "  train-fusion  train+eval dual-branch current+vibration model (EPOCHS=20)"
 	@echo "  report     write results/summary.md"
 	@echo "  clean      remove generated data/, models/, results artifacts"
 
@@ -43,6 +44,9 @@ train:
 
 evaluate:
 	$(PY) -m python.evaluate --signal-type $(SIGNAL)
+
+train-fusion:
+	$(PY) -m python.train_fusion --epochs $(EPOCHS)
 
 report:
 	$(PY) -m python.report_metrics

@@ -57,6 +57,7 @@ Held-out recordings, Healthy vs Inter-turn. Balanced acc / macro-F1 (test set is
 | Channel | Bal-acc | Macro-F1 | Healthy rec. | Inter-turn rec. |
 |---|---|---|---|---|
 | **Vibration** | **1.00** | **1.00** | 1.00 | 1.00 |
+| Fusion (cur.+vib.) | 0.88 | 0.76 | 1.00 | 0.75 |
 | Current | 0.69 | 0.49 | 1.00 | 0.37 |
 
 ![](../../results/confusion_real_2class.png)

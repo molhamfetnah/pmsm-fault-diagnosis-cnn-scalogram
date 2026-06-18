@@ -1,14 +1,18 @@
 # PMSM Fault Diagnosis using Wavelet Scalograms and CNNs
 
+[![tests](https://github.com/molhamfetnah/pmsm-fault-diagnosis-cnn-scalogram/actions/workflows/ci.yml/badge.svg)](https://github.com/molhamfetnah/pmsm-fault-diagnosis-cnn-scalogram/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A reproducible research pipeline that diagnoses faults in **Permanent Magnet
 Synchronous Motors (PMSM)** by turning motor signals into **Continuous Wavelet
 Transform (CWT) scalogram images** and classifying them with a **Convolutional
 Neural Network (CNN)**.
 
-> **Status.** The complete software pipeline is implemented, tested, and runs
-> end-to-end without MATLAB. It ships with a synthetic signal generator for
-> instant validation, and loaders for real public PMSM datasets. See
-> [Results](#results) for the important caveat about the synthetic numbers.
+> **Status.** Complete, tested (38 unit tests), and runs end-to-end without
+> MATLAB. Trained and evaluated on the **real KAIST PMSM dataset**: vibration
+> scalograms detect inter-turn stator faults at balanced-accuracy **1.00** on
+> held-out recordings, current scalograms much lower (**0.69**). See §5 for the
+> numbers and an important limitation (few healthy recordings).
 
 Authors: **Mulham Fetna**, **Mohammad Zein Qabbani** — university research project.
 
@@ -150,12 +154,21 @@ distribution** and uses **held-out recordings** (leakage-free, grouped by
 Inter-turn), the headline metrics are **balanced accuracy** and **2-class
 macro-F1**, not raw accuracy.
 
-| Channel       | Test acc | Balanced acc | Macro-F1 | Healthy recall | Inter-turn recall |
-|---------------|----------|--------------|----------|----------------|-------------------|
-| **Vibration** | **1.00** | **1.00**     | **1.00** | 1.00           | 1.00              |
-| Current       | 0.50     | 0.69         | 0.49     | 1.00           | 0.37              |
+| Channel              | Test acc | Balanced acc | Macro-F1 | Healthy recall | Inter-turn recall |
+|----------------------|----------|--------------|----------|----------------|-------------------|
+| **Vibration**        | **1.00** | **1.00**     | **1.00** | 1.00           | 1.00              |
+| Fusion (cur.+vib.)   | 0.80     | 0.88         | 0.76     | 1.00           | 0.75              |
+| Current              | 0.50     | 0.69         | 0.49     | 1.00           | 0.37              |
 
 ![Real confusion matrices](results/confusion_real_2class.png)
+
+The **dual-branch fusion** model (`python/train_fusion.py`, pairs current+vibration
+scalograms from the same condition/segment, condition-level leakage-free split)
+lands between the two single channels: it lifts the weak current result but does
+**not** beat vibration alone here — combining a strong and a weak channel did not
+help on this small dataset, and its lighter global-average-pooling head isn't a
+like-for-like comparison with the single-channel models. Run it with
+`make train-fusion`.
 
 **Real scalograms** (note how the inter-turn fault enriches the vibration
 time-frequency content):

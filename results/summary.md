@@ -22,10 +22,11 @@ present in the real data (synthetic-only; see README §5).
 
 ## Real test-set results (held-out recordings)
 
-| channel   | test accuracy | balanced accuracy | macro-F1 (2-cls) | Healthy recall | InterTurn recall |
-|-----------|---------------|-------------------|------------------|----------------|------------------|
-| current   | 0.50          | 0.69              | 0.49             | 1.00           | 0.37             |
-| vibration | **1.00**      | **1.00**          | **1.00**         | 1.00           | 1.00             |
+| channel            | test accuracy | balanced accuracy | macro-F1 (2-cls) | Healthy recall | InterTurn recall |
+|--------------------|---------------|-------------------|------------------|----------------|------------------|
+| current            | 0.50          | 0.69              | 0.49             | 1.00           | 0.37             |
+| vibration          | **1.00**      | **1.00**          | **1.00**         | 1.00           | 1.00             |
+| fusion (cur.+vib.) | 0.80          | 0.88              | 0.76             | 1.00           | 0.75             |
 
 Confusion matrices: `results/confusion_real_2class.png`. Raw machine-readable
 metrics: `results/real_metrics.json`, `results/report_{current,vibration}.json`.

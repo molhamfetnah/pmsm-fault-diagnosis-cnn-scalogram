@@ -44,10 +44,19 @@ Source: Mendeley `rgn5brrgrn` (1.0 + 1.5 kW), 3,150 scalogram segments (current
 leakage-free). Headline metrics are balanced accuracy and 2-class macro-F1
 because the test set is imbalanced (50 Healthy / 200 Inter-turn).
 
-| Channel   | Test acc | Balanced acc | Macro-F1 | Healthy recall | Inter-turn recall |
-|-----------|----------|--------------|----------|----------------|-------------------|
-| Vibration | 1.00     | 1.00         | 1.00     | 1.00           | 1.00              |
-| Current   | 0.50     | 0.69         | 0.49     | 1.00           | 0.37              |
+| Channel            | Test acc | Balanced acc | Macro-F1 | Healthy recall | Inter-turn recall |
+|--------------------|----------|--------------|----------|----------------|-------------------|
+| Vibration          | 1.00     | 1.00         | 1.00     | 1.00           | 1.00              |
+| Fusion (cur.+vib.) | 0.80     | 0.88         | 0.76     | 1.00           | 0.75              |
+| Current            | 0.50     | 0.69         | 0.49     | 1.00           | 0.37              |
+
+The dual-branch **fusion** model (current+vibration scalograms paired per
+condition/segment, condition-level leakage-free split; `python/train_fusion.py`)
+scores between the single channels — better than current alone but below
+vibration alone. On this small dataset, adding the weak current channel did not
+improve on the strong vibration channel; the fusion head also uses
+global-average-pooling (lighter than the single-channel flatten head), so the
+comparison is indicative rather than strictly controlled.
 
 Confusion matrices: `results/confusion_real_2class.png`. Example scalograms:
 `results/example_scalograms_real.png`. Raw metrics: `results/real_metrics.json`.
