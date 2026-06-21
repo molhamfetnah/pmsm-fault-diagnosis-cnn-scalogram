@@ -62,6 +62,12 @@ make demo      # synthetic end-to-end: simulate → scalograms → train → eva
 `make demo` writes a trained model to `models/`, and metrics + a confusion
 matrix to `results/`.
 
+**GPU (optional).** The default install is CPU-only. For an NVIDIA GPU:
+`pip install 'tensorflow[and-cuda]==2.16.*'` — TensorFlow then auto-detects the
+card (verified on a Quadro P620: ~17× faster per step than CPU here). On
+small-VRAM GPUs export `TF_FORCE_GPU_ALLOW_GROWTH=true` so TF doesn't pre-grab
+all memory.
+
 Run stages individually:
 
 ```bash

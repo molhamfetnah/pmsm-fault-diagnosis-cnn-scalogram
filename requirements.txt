@@ -1,4 +1,7 @@
 # Requires Python 3.10-3.12 (TensorFlow has no wheel for 3.13/3.14 yet).
+# CPU build by default. For an NVIDIA GPU install the CUDA libs instead:
+#   pip install 'tensorflow[and-cuda]==2.16.*'
+# TF then auto-detects the GPU; on small-VRAM cards set TF_FORCE_GPU_ALLOW_GROWTH=true.
 tensorflow==2.16.*
 pandas==2.2.*
 numpy==1.26.*
