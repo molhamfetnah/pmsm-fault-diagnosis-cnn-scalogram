@@ -6,7 +6,7 @@ PIP := .venv/bin/pip
 SIGNAL ?= current
 EPOCHS ?= 20
 
-.PHONY: help setup test demo simulate scalograms split train train-fusion evaluate report clean
+.PHONY: help setup test demo simulate scalograms split train train-fusion evaluate report docs clean
 
 help:
 	@echo "Targets:"
@@ -50,6 +50,19 @@ train-fusion:
 
 report:
 	$(PY) -m python.report_metrics
+
+# Build presentable report (PDF/DOCX) + slides (PPTX/PDF) into docs/build/.
+# Needs: pandoc, xelatex (texlive-xetex). Run pandoc from each doc's dir so the
+# relative image paths resolve and figures embed.
+docs:
+	mkdir -p docs/build
+	cd docs/report && pandoc report.md -o ../build/report.pdf --pdf-engine=xelatex \
+		-V geometry:margin=2.5cm -V fontsize=12pt -V linestretch=1.5 \
+		-V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" --toc -V colorlinks=true
+	cd docs/report && pandoc report.md -o ../build/report.docx --toc
+	cd docs/presentation && pandoc slides.md -o ../build/slides.pptx
+	cd docs/presentation && pandoc slides.md -t beamer -o ../build/slides.pdf \
+		--pdf-engine=xelatex -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V fontsize=9pt
 
 demo: simulate
 	$(PY) -m python.ingest_sim
