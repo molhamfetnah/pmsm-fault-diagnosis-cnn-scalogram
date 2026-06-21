@@ -6,10 +6,14 @@ paginate: true
 
 # PMSM Fault Diagnosis using Wavelet Scalograms + CNN
 
-**Mulham Fetna · Mohammad Zein Qabbani**
+**«University Name — Faculty»** · **«Department / Program»**
 
-Research seminar — CNN classification of PMSM operating states from
-time–frequency images
+Students: **Mulham Fetna** · **Mohammad Zein Qabbani**
+
+Supervisor: **«Dr. Supervisor Name»**  ·  Academic year: **«2025–2026»**
+
+*Research seminar — CNN classification of PMSM operating states from
+time–frequency images*
 
 ---
 

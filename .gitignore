@@ -11,3 +11,4 @@ slprj/
 simscape-pmsm/
 data/manifest.csv
 data/segments/
+docs/**/_ar_tmp.md

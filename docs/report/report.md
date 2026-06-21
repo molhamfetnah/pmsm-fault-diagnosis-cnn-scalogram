@@ -1,8 +1,13 @@
 # Fault Diagnosis of PMSM Motors using Convolutional Neural Networks on Wavelet Scalogram Images
 
+**«University Name — Faculty of Engineering»**
+**«Department / Program»**
+
 **Research seminar report**
 
-Authors: **Mulham Fetna**, **Mohammad Zein Qabbani**
+Students: **Mulham Fetna**, **Mohammad Zein Qabbani**
+Supervisor: **«Dr. Supervisor Name»**
+Academic year: **«2025–2026»**
 
 ---
 

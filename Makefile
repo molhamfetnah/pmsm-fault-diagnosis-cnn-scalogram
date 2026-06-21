@@ -6,7 +6,7 @@ PIP := .venv/bin/pip
 SIGNAL ?= current
 EPOCHS ?= 20
 
-.PHONY: help setup test demo simulate scalograms split train train-fusion evaluate report docs clean
+.PHONY: help setup test demo simulate scalograms split train train-fusion evaluate report docs docs-ar clean
 
 help:
 	@echo "Targets:"
@@ -63,6 +63,20 @@ docs:
 	cd docs/presentation && pandoc slides.md -o ../build/slides.pptx
 	cd docs/presentation && pandoc slides.md -t beamer -o ../build/slides.pdf \
 		--pdf-engine=xelatex -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V fontsize=9pt
+
+# Arabic deliverables (RTL). DOCX/PPTX keep original symbols; the PDF is built from
+# a symbol-sanitized copy because Amiri lacks math/arrow glyphs. Needs the Amiri font.
+docs-ar:
+	mkdir -p docs/build
+	cd docs/report && pandoc report-ar.md -o ../build/report-ar.docx --toc
+	cd docs/presentation && pandoc slides-ar.md -o ../build/slides-ar.pptx
+	$(PY) docs/_sanitize_for_pdf.py docs/report/report-ar.md docs/report/_ar_tmp.md
+	cd docs/report && pandoc _ar_tmp.md -o ../build/report-ar.pdf --pdf-engine=xelatex \
+		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.5cm -V fontsize=12pt \
+		-V linestretch=1.5 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/report/_ar_tmp.md
+	$(PY) docs/_sanitize_for_pdf.py docs/presentation/slides-ar.md docs/presentation/_ar_tmp.md
+	cd docs/presentation && pandoc _ar_tmp.md -o ../build/slides-ar.pdf --pdf-engine=xelatex \
+		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2cm -V dir=rtl -V lang=ar; rm -f docs/presentation/_ar_tmp.md
 
 demo: simulate
 	$(PY) -m python.ingest_sim
