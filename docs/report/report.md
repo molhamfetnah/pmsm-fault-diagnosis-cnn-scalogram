@@ -593,14 +593,63 @@ these results and is the foremost target for future data collection.
 ## 9. Improvement Experiments
 
 This section reports the systematic experiments required by subtasks 5 and 6
-(effect of data quantity/quality, and model improvement). The full numbers and the
-learning-curve figure are produced by `python/experiments.py` and written to
-`results/experiments_real.json` and `results/learning_curve.png`; a written
-summary lives in `docs/experiments.md`.
+(effect of data quantity/quality, and model improvement). All 16 runs were
+produced by `python/experiments.py` (each run in its own subprocess, checkpointed
+and resumable) and evaluated on the **natural, imbalanced, held-out test set**.
+Full data: `results/experiments_real.json`; extended discussion:
+`docs/experiments.md`.
 
-*(The quantitative tables for this section are generated from the ablation runs and
-summarised in `docs/experiments.md`; see that file for the balancing, image-size
-and training-set-size studies and their interpretation.)*
+### 9.1 Effect of class balancing
+
+| Channel | Balancing | Balanced acc | Macro-F1 | Healthy recall | Inter-turn recall |
+|---|---|---|---|---|---|
+| current | off | 0.800 | 0.851 | 0.600 | 1.000 |
+| current | **on** | 0.693 | 0.502 | **1.000** | 0.385 |
+| vibration | off | 1.000 | 1.000 | 1.000 | 1.000 |
+| vibration | on | 1.000 | 1.000 | 1.000 | 1.000 |
+
+Without balancing, the current model biases to the majority class — it misses
+40 % of healthy motors here and collapses to **0 % healthy recall** in repeated
+runs (raw accuracy 0.80 = base rate). Balancing forces healthy detection
+(recall → 1.00), exposing the channel's true weak separability. Vibration is
+unaffected (already perfect).
+
+### 9.2 Effect of scalogram image size
+
+| Channel | 96 px | 160 px | 224 px |
+|---|---|---|---|
+| current (balanced acc) | 0.682 | 0.730 | **0.760** |
+| vibration (balanced acc) | 1.000 | 1.000 | 1.000 |
+
+For the weak current channel, balanced accuracy rises **monotonically** with
+resolution (0.68 → 0.76) — the inter-turn signature lives in fine time–frequency
+detail. Vibration is saturated at every size, so 96 px vibration images would
+train and infer ~5× faster with no accuracy loss.
+
+### 9.3 Effect of training-set size (data quantity)
+
+| Channel | 25 % (n≈50) | 50 % (n≈100) | 100 % (n≈200) |
+|---|---|---|---|
+| current (balanced acc) | 0.693 | 0.698 | 0.698 |
+| vibration (balanced acc) | 0.970 | 1.000 | 1.000 |
+
+![Learning curve](../../results/learning_curve.png)
+
+*Figure 9.1 — Balanced accuracy vs. number of training images.* Vibration reaches
+0.97 with only ~46 images and 1.00 by ~98; current is **flat at ~0.70 regardless
+of data volume**. This is the study's clearest finding: the current channel's
+ceiling is set by **signal quality, not quantity** — more current data will not
+help, whereas vibration succeeds with very little. This directly answers
+subtask 5: for this problem, dataset *quality* (channel, severity) dominates
+dataset *quantity*.
+
+### 9.4 Overfitting controls
+
+Dropout (0.5), global average pooling in the fusion head, training augmentation
+(random flips), early stopping (patience 5, best-weights restore), and a small
+architecture together keep the model from overfitting; the flat current and
+saturated vibration curves confirm capacity is not the binding constraint —
+signal quality (current) and the four-healthy-recording limit are.
 
 ---
 

@@ -1,0 +1,200 @@
+{
+  "balancing": [
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": false,
+      "train_frac": 1.0,
+      "n_train": 1050,
+      "accuracy": 0.92,
+      "balanced_acc": 0.8,
+      "macro_f1": 0.851,
+      "healthy_recall": 0.6,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 0.508,
+      "balanced_acc": 0.693,
+      "macro_f1": 0.502,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.385
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": false,
+      "train_frac": 1.0,
+      "n_train": 1100,
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    }
+  ],
+  "image_size": [
+    {
+      "channel": "current",
+      "image_size": 96,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 0.492,
+      "balanced_acc": 0.682,
+      "macro_f1": 0.488,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.365
+    },
+    {
+      "channel": "current",
+      "image_size": 160,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 0.568,
+      "balanced_acc": 0.73,
+      "macro_f1": 0.555,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.46
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 0.616,
+      "balanced_acc": 0.76,
+      "macro_f1": 0.597,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.52
+    },
+    {
+      "channel": "vibration",
+      "image_size": 96,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 160,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    }
+  ],
+  "learning_curve": [
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 0.25,
+      "n_train": 54,
+      "accuracy": 0.508,
+      "balanced_acc": 0.693,
+      "macro_f1": 0.502,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.385
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 0.5,
+      "n_train": 102,
+      "accuracy": 0.516,
+      "balanced_acc": 0.698,
+      "macro_f1": 0.509,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.395
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 0.516,
+      "balanced_acc": 0.698,
+      "macro_f1": 0.509,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.395
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 0.25,
+      "n_train": 46,
+      "accuracy": 0.988,
+      "balanced_acc": 0.97,
+      "macro_f1": 0.981,
+      "healthy_recall": 0.94,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 0.5,
+      "n_train": 98,
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    }
+  ]
+}

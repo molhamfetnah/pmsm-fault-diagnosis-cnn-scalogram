@@ -95,17 +95,47 @@ def _specs():
     return specs
 
 
+def _spec_key(study, d):
+    # identify a run from either a spec or a stored result (keys differ slightly)
+    st = d.get("signal_type", d.get("channel"))
+    bal = d.get("balance", d.get("balanced"))
+    return (study, st, d.get("image_size"), bal, d.get("train_frac"))
+
+
 def main(cfg):
     out = {"balancing": [], "image_size": [], "learning_curve": []}
+    os.makedirs(cfg["paths"]["results"], exist_ok=True)
+    out_path = os.path.join(cfg["paths"]["results"], "experiments_real.json")
+    # Resume: reload prior checkpoint and skip runs already completed successfully.
+    done = set()
+    if os.path.exists(out_path):
+        try:
+            prev = json.load(open(out_path))
+            for study, rows in prev.items():
+                out.setdefault(study, [])
+                for r in rows:
+                    out[study].append(r)
+                    if "balanced_acc" in r:  # only count successful runs as done
+                        done.add(_spec_key(study, r))
+            print(f"[resume] {len(done)} runs already complete; skipping them", flush=True)
+        except Exception:
+            out = {"balancing": [], "image_size": [], "learning_curve": []}
     for spec in _specs():
         study = spec["study"]
-        res = _run_in_subprocess(spec)
+        if _spec_key(study, spec) in done:
+            continue
+        try:
+            res = _run_in_subprocess(spec)
+        except Exception as e:  # one bad run shouldn't sink the whole sweep
+            res = {**{k: spec[k] for k in ("signal_type", "image_size", "balance", "train_frac")},
+                   "error": str(e)[:200]}
         out[study].append(res)
         print(study, res, flush=True)
-    os.makedirs(cfg["paths"]["results"], exist_ok=True)
-    with open(os.path.join(cfg["paths"]["results"], "experiments_real.json"), "w") as f:
-        json.dump(out, f, indent=2)
-    _plot_learning_curve(out["learning_curve"], cfg["paths"]["results"])
+        # Checkpoint after every run so a suspend/kill never loses completed work.
+        with open(out_path, "w") as f:
+            json.dump(out, f, indent=2)
+    _plot_learning_curve([r for r in out["learning_curve"] if "balanced_acc" in r],
+                         cfg["paths"]["results"])
     return out
 
 
