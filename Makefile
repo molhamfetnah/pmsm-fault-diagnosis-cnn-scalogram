@@ -63,6 +63,10 @@ docs:
 	cd docs/presentation && pandoc slides.md -o ../build/slides.pptx
 	cd docs/presentation && pandoc slides.md -t beamer -o ../build/slides.pdf \
 		--pdf-engine=xelatex -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V fontsize=9pt
+	for f in build-walkthrough defense-study-guide; do \
+		pandoc docs/$$f.md -o docs/build/$$f.pdf --pdf-engine=xelatex \
+			-V geometry:margin=2.2cm -V fontsize=11pt -V mainfont="DejaVu Sans" \
+			-V monofont="DejaVu Sans Mono" --toc -V colorlinks=true; done
 
 # Arabic deliverables (RTL). DOCX/PPTX keep original symbols; the PDF is built from
 # a symbol-sanitized copy because Amiri lacks math/arrow glyphs. Needs the Amiri font.
@@ -77,6 +81,11 @@ docs-ar:
 	$(PY) docs/_sanitize_for_pdf.py docs/presentation/slides-ar.md docs/presentation/_ar_tmp.md
 	cd docs/presentation && pandoc _ar_tmp.md -o ../build/slides-ar.pdf --pdf-engine=xelatex \
 		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2cm -V dir=rtl -V lang=ar; rm -f docs/presentation/_ar_tmp.md
+	for f in build-walkthrough-ar defense-study-guide-ar; do \
+		$(PY) docs/_sanitize_for_pdf.py docs/$$f.md docs/_tmp.md; \
+		pandoc docs/_tmp.md -o docs/build/$$f.pdf --pdf-engine=xelatex \
+			-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.2cm -V fontsize=12pt \
+			-V linestretch=1.4 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/_tmp.md; done
 
 demo: simulate
 	$(PY) -m python.ingest_sim
