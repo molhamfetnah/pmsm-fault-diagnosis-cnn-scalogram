@@ -65,6 +65,36 @@ Turn a **signal** problem into an **image** problem.
 
 ---
 
+## Motor & control system
+
+![w:780](../figures/fig_foc_block.png)
+
+- Stator (3-phase winding) + PM rotor; driven by an **inverter** under **FOC**.
+- The current loop **rejects disturbances → it masks the fault in the current**.
+- That is *why vibration detects inter-turn faults far better* (our key result).
+
+---
+
+## PMSM vs its relatives
+
+![w:880](../figures/fig_motor_comparison.png)
+
+- vs **PMDC**: same easy torque control, but no brushes → less maintenance.
+- vs **BLDC**: sinusoidal back-EMF + FOC → smoother torque, higher efficiency.
+- vs **Induction**: no rotor current/slip → higher efficiency & torque density.
+
+---
+
+## Detecting the fault — today vs this work
+
+![w:820](../figures/fig_detection_taxonomy.png)
+
+- Manual/offline (thermal, **Megger**, surge) → need shutdown, periodic.
+- Online MCSA/vibration FFT → fixed thresholds, fooled by load/speed.
+- **CWT scalogram + CNN** → learns features, robust, detects **earlier**.
+
+---
+
 ## 5. Why wavelets, not Fourier
 
 - Fourier is **blind to time** — it can't say *when* a frequency occurs.

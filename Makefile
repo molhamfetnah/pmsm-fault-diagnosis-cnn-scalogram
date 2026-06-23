@@ -77,7 +77,12 @@ docs:
 # a symbol-sanitized copy because Amiri lacks math/arrow glyphs. Needs the Amiri font.
 docs-ar:
 	mkdir -p docs/build
+	$(PY) -m python.figures_engineering
 	cd docs/report && pandoc report-ar.md -o ../build/report-ar.docx --toc
+	$(PY) docs/_sanitize_for_pdf.py docs/report/engineering-background-ar.md docs/report/_ar_tmp.md
+	cd docs/report && pandoc _ar_tmp.md -o ../build/engineering-background-ar.pdf --pdf-engine=xelatex \
+		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.3cm -V fontsize=12pt \
+		-V linestretch=1.4 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/report/_ar_tmp.md
 	cd docs/presentation && pandoc slides-ar.md -o ../build/slides-ar.pptx
 	$(PY) docs/_sanitize_for_pdf.py docs/report/report-ar.md docs/report/_ar_tmp.md
 	cd docs/report && pandoc _ar_tmp.md -o ../build/report-ar.pdf --pdf-engine=xelatex \

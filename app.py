@@ -125,6 +125,8 @@ st.sidebar.caption("Interactive project walkthrough & test lab")
 SECTIONS = [
     "🏠 Home & Pipeline",
     "🩺 The Problem (PMSM & Faults)",
+    "🔌 Motor & Control System",
+    "🛠️ Fault Detection Methods",
     "🔬 Signal Lab: Fourier vs Wavelet",
     "🖼️ Scalogram Studio",
     "🗂️ Dataset Explorer",
@@ -225,6 +227,93 @@ kept ≈0) and `i_q` (torque).
     cc, vv = st.columns(2)
     cc.markdown("**Current** — free (sensors already in every FOC drive), but the closed-loop controller *suppresses* fault signatures → weaker signal.")
     vv.markdown("**Vibration** — needs an accelerometer, but responds *directly* to the fault → much cleaner signature. (Our results confirm vibration wins.)")
+
+
+# =========================================================================== #
+# MOTOR & CONTROL SYSTEM
+# =========================================================================== #
+elif page == "🔌 Motor & Control System":
+    st.title("🔌 The Motor & Its Control System")
+    st.caption("Electrical-machines background. Full chapter: docs/build/engineering-background.pdf")
+
+    def fig(p, cap):
+        if os.path.exists(p): st.image(p, caption=cap, use_container_width=True)
+        else: st.info(f"Run `make docs` to generate {os.path.basename(p)}")
+
+    tabs = st.tabs(["Construction", "Operating principle", "Control (FOC)", "PMSM vs relatives"])
+    with tabs[0]:
+        st.markdown("""
+**Stator** (laminated iron + 3-phase winding — the part that fails in an inter-turn
+fault) and **rotor** (permanent magnets, no brushes/slip), separated by the
+**air gap**. SPM = surface magnets (no saliency); IPM = buried magnets (extra
+reluctance torque, used in EV traction).""")
+        fig("docs/figures/fig_pmsm_construction.png", "PMSM cross-section (surface-mounted, 4-pole)")
+    with tabs[1]:
+        st.markdown("""
+Balanced 3-phase currents create a **rotating magnetic field** (`n_s = 120·f/P`);
+the rotor magnets lock to it and turn **in synchronism** — no slip, no rotor
+current → high efficiency. Torque ∝ **i_q** (the q-axis current), with **i_d ≈ 0**.""")
+        c1, c2 = st.columns(2)
+        with c1: fig("docs/figures/fig_rotating_field.png", "3-phase currents → rotating field")
+        with c2: fig("docs/figures/fig_backemf_comparison.png", "Sinusoidal back-EMF (PMSM) vs trapezoidal (BLDC)")
+        fig("docs/figures/fig_torque_speed.png", "Torque–speed: constant-torque then field-weakening")
+    with tabs[2]:
+        st.markdown("""
+A PMSM runs under **Field-Oriented Control**: speed PI → torque command `i_q*`;
+current PI loops regulate `i_d,i_q` (via Clarke+Park on the measured currents);
+inverse Park + **SVPWM** drive a **3-phase inverter** (6 IGBT/MOSFET switches);
+an encoder/sensorless estimator gives rotor position.
+
+**Why this matters for diagnosis:** the current loop *rejects disturbances*, so it
+partly **masks the fault signature in the current** — which is exactly why
+**vibration** detects inter-turn faults far better in our results.""")
+        fig("docs/figures/fig_foc_block.png", "Field-Oriented Control of a PMSM")
+        fig("docs/figures/fig_inverter.png", "Two-level three-phase voltage-source inverter")
+    with tabs[3]:
+        st.markdown("The PMSM combines the DC motor's easy torque control with brushless "
+                    "reliability and the highest efficiency/torque density:")
+        fig("docs/figures/fig_motor_comparison.png", "PMSM vs PMDC / BLDC / Induction")
+
+
+# =========================================================================== #
+# FAULT DETECTION METHODS
+# =========================================================================== #
+elif page == "🛠️ Fault Detection Methods":
+    st.title("🛠️ How PMSM Faults Are Detected")
+
+    def fig(p, cap):
+        if os.path.exists(p): st.image(p, caption=cap, use_container_width=True)
+        else: st.info(f"Run `make docs` to generate {os.path.basename(p)}")
+
+    fig("docs/figures/fig_detection_taxonomy.png", "Landscape of PMSM fault-detection methods")
+    st.markdown("### The methods, and where each falls short")
+    c1, c2 = st.columns(2)
+    c1.markdown("""
+**Manual / offline (motor stopped)**
+- Thermal imaging — only once hot enough
+- Insulation resistance (**Megger**) — misses incipient turn shorts
+- Surge / hi-pot test — offline, stressful
+→ *need shutdown, periodic, skilled labour*
+""")
+    c2.markdown("""
+**Online / automated**
+- **MCSA** (current FFT) + vibration FFT/envelope — fixed thresholds, fooled by load/speed
+- Model-based observers — need an accurate motor model
+→ *assume stationarity; analyst must know which frequency*
+""")
+    st.markdown("### The classic manual signature (MCSA) and the fault mechanism")
+    c3, c4 = st.columns(2)
+    with c3: fig("docs/figures/fig_interturn_mechanism.png", "Inter-turn short: shorted turns → circulating current → heat")
+    with c4: fig("docs/figures/fig_mcsa_spectrum.png", "MCSA: a fault raises harmonics/side-bands")
+    st.markdown("### Why this project's CWT + CNN improves on them")
+    st.markdown("""
+Captures **non-stationary** signatures (CWT keeps time *and* frequency), **learns**
+the features automatically (no hand-picked frequency), is **robust to operating
+point**, and detects **earlier / at lower severity** than a fixed-threshold FFT
+alarm — running online on sensors the drive already has.""")
+    fig("docs/figures/fig_method_improvement.png", "Earlier detection vs fixed-threshold FFT")
+    st.success("This complements (does not replace) offline commissioning tests — it adds a "
+               "continuous, intelligent online monitor.")
 
 
 # =========================================================================== #

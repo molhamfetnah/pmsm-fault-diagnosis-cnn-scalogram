@@ -223,6 +223,46 @@ from the *difficulty* of the real problem.
 
 ---
 
+## 4b. Machine & control questions (electrical-engineering depth)
+
+*(Full treatment + diagrams in `engineering-background.pdf`.)*
+
+**M1. How does a PMSM produce torque?**
+Three-phase stator currents make a rotating magnetic field (`n_s=120f/P`); the
+rotor permanent magnets lock to it and rotate synchronously. In the d–q frame
+torque `T≈(3/2)P·λ_m·i_q`, so the q-axis current is the torque command (i_d≈0).
+
+**M2. PMSM vs PMDC vs BLDC vs induction?**
+PMDC: brushed, easy control but wears out. BLDC: PM rotor, trapezoidal back-EMF,
+six-step drive, more ripple. Induction: no magnets, rugged, but rotor slip/current
+→ lower efficiency. PMSM: sinusoidal back-EMF + FOC → smoothest torque, highest
+efficiency/torque density, brushless. (See comparison figure.)
+
+**M3. What is FOC and why use it?**
+Field-Oriented Control transforms phase currents to the rotor d–q frame so flux
+(i_d) and torque (i_q) are controlled independently — like a DC motor. Loops: speed
+PI → i_q*, current PIs → inverse Park → SVPWM → inverter.
+
+**M4. Why does vibration beat current — physically?**
+The current PI loop is designed to reject disturbances, so it partially cancels
+the fault's effect on the current. Vibration is outside the control loop and
+responds directly → stronger, cleaner fault signature.
+
+**M5. Explain the inter-turn fault mechanism and danger.**
+Turn insulation fails → a shorted loop → the rotating flux drives a large
+circulating current in those turns → local overheating → spreads turn→phase→ground
+→ burnout in minutes. Hence early detection matters.
+
+**M6. How is this fault detected in industry today, and the limits?**
+Offline: thermal camera, insulation-resistance (Megger), surge test (need
+shutdown, periodic). Online: MCSA (current FFT), vibration FFT/envelope (fixed
+thresholds, fooled by load/speed); model-based observers (need a model). Our
+CWT+CNN learns features, is robust to operating point, and detects earlier.
+
+**M7. What standards apply?**
+ISO 20958 (electrical-signal condition monitoring), ISO 10816/20816 (vibration),
+IEC 60034 (rotating machines), IEC 60085 insulation classes (B/F/H), IEEE 1415.
+
 ## 5. "Must be able to explain at the whiteboard" checklist
 
 - [ ] Draw the full pipeline: signal → window → CWT → scalogram → CNN → class.
