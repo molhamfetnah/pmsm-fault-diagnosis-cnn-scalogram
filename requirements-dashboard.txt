@@ -1,0 +1,4 @@
+# Extra deps for the interactive dashboard (app.py). Install on top of requirements.txt:
+#   .venv/bin/pip install -r requirements-dashboard.txt
+streamlit>=1.40
+plotly>=5.20

@@ -62,6 +62,21 @@ make demo      # synthetic end-to-end: simulate → scalograms → train → eva
 `make demo` writes a trained model to `models/`, and metrics + a confusion
 matrix to `results/`.
 
+**Interactive dashboard.** A Streamlit app (`app.py`) walks through the whole
+project step by step — signal → CWT → scalogram → CNN — and lets you **test the
+model by hand** (synthetic generator, real held-out samples, `.npy` upload, and a
+quiz mode):
+
+```bash
+.venv/bin/pip install -r requirements-dashboard.txt
+./run_demo.sh        # opens http://localhost:8501
+```
+
+Nine sections: Home & Pipeline · The Problem · Signal Lab (Fourier vs Wavelet) ·
+Scalogram Studio · Dataset Explorer · The CNN Model · Results & Ablations · Test
+Lab · Concepts & Defense Prep. It degrades gracefully when data/models are absent
+(educational + synthetic parts always work).
+
 **GPU (optional).** The default install is CPU-only. For an NVIDIA GPU:
 `pip install 'tensorflow[and-cuda]==2.16.*'` — TensorFlow then auto-detects the
 card (verified on a Quadro P620: ~17× faster per step than CPU here). On
