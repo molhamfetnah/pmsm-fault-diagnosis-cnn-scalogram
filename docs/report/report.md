@@ -11,6 +11,13 @@ Academic year: **«2025–2026»**
 
 ---
 
+> **Companion chapter — read first.** The electrical-machines and control
+> -engineering background (PMSM construction & operation, the FOC drive, each fault
+> with its causes, traditional vs automated detection, the proposed method's
+> improvements, and a PMSM-vs-PMDC/BLDC/induction comparison) is in
+> **`engineering-background.pdf`** with supporting diagrams. This report focuses on
+> the signal-processing and CNN pipeline.
+
 ## Abstract
 
 Permanent Magnet Synchronous Motors (PMSMs) are the workhorses of modern electric

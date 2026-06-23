@@ -56,9 +56,14 @@ report:
 # relative image paths resolve and figures embed.
 docs:
 	mkdir -p docs/build
+	$(PY) -m python.figures_engineering
 	cd docs/report && pandoc report.md -o ../build/report.pdf --pdf-engine=xelatex \
 		-V geometry:margin=2.5cm -V fontsize=12pt -V linestretch=1.5 \
 		-V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" --toc -V colorlinks=true
+	cd docs/report && pandoc engineering-background.md -o ../build/engineering-background.pdf \
+		--pdf-engine=xelatex -V geometry:margin=2.3cm -V fontsize=11pt -V linestretch=1.3 \
+		-V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" --toc -V colorlinks=true
+	cd docs/report && pandoc engineering-background.md -o ../build/engineering-background.docx --toc
 	cd docs/report && pandoc report.md -o ../build/report.docx --toc
 	cd docs/presentation && pandoc slides.md -o ../build/slides.pptx
 	cd docs/presentation && pandoc slides.md -t beamer -o ../build/slides.pdf \
