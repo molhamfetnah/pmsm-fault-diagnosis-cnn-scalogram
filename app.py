@@ -127,6 +127,7 @@ SECTIONS = [
     "📈 Results & Ablations",
     "🧪 Test Lab (try it by hand)",
     "📚 Concepts & Defense Prep",
+    "✅ Requirements Coverage",
 ]
 page = st.sidebar.radio("Walk through the project:", SECTIONS)
 st.sidebar.markdown("---")
@@ -368,6 +369,19 @@ A compact CNN, sized deliberately for a few-thousand-image dataset.
     c3.markdown("**Balancing** undersample majority (train/val)")
     c3.markdown("**Fusion** two branches + global avg pooling")
 
+    with st.expander("🔧 Number of layers (depth) — design choice & improvement (subtask 6)"):
+        st.markdown("""
+We use **3 convolutional blocks** (32→64→128 filters). This depth was chosen
+deliberately for a few-thousand-image dataset:
+- **Fewer blocks (1–2):** too little capacity to capture the fault motifs.
+- **More blocks (4+):** more parameters → **overfitting** on this small set, and the
+  224-px map shrinks to ~14×14 then 7×7, losing useful resolution.
+- The **fusion** model further reduces parameters by replacing `Flatten` with
+  **Global Average Pooling** — a depth/architecture change that cut memory and
+  overfitting. Depth interacts with **image size** (§Results) — bigger images
+  benefit the current channel, where finer detail survives more pooling stages.
+""")
+
     if MODELS["current"] is not None:
         with st.expander("📐 Live model.summary() (current channel)"):
             lines = []
@@ -601,6 +615,57 @@ elif page == "📚 Concepts & Defense Prep":
 - Results: vibration **1.00**, current **0.69**, fusion **0.88** (balanced acc)
 - 38 tests · CI · GPU (P620, ~17×) · Python-only
 """)
+
+# =========================================================================== #
+# 10. REQUIREMENTS COVERAGE
+# =========================================================================== #
+elif page == "✅ Requirements Coverage":
+    st.title("✅ Requirements Coverage")
+    st.markdown("Every point and keyword from the assignment (`project-discription-ar.md`) "
+                "mapped to where it is demonstrated in this lab and the deliverables.")
+
+    cov = pd.DataFrame([
+        ["المهمة الرئيسية", "CNN classifies scalograms of PMSM signals → faults", "🧪 Test Lab + whole pipeline", "✅"],
+        ["1 · مبدأ عمل PMSM", "PMSM operating principle", "🩺 The Problem", "✅"],
+        ["1 · أنواع الأعطال", "Common fault types", "🩺 The Problem (per-class tabs)", "✅"],
+        ["1 · معالجة الإشارات", "Signal processing concept", "🔬 Signal Lab", "✅"],
+        ["1 · تحويل المويجات / CWT", "Wavelet Transform / CWT", "🔬 Signal Lab · 🖼️ Scalogram Studio", "✅"],
+        ["1 · مفهوم Scalogram", "Scalogram concept", "🖼️ Scalogram Studio", "✅"],
+        ["1 · أساسيات CNN", "CNN fundamentals", "🧠 The CNN Model · 📚 Concepts", "✅"],
+        ["2 · تيار أو اهتزاز", "Current or vibration signals", "All sections (channel selector)", "✅"],
+        ["2 · طبيعي/حمل زائد/عطل", "Normal / overload / fault states", "Classes: Healthy / Overload / InterTurn", "✅"],
+        ["2 · بيانات جاهزة أو محاكاة", "Real data OR simulation", "🗂️ Dataset Explorer (KAIST) · 🧪 synthetic", "✅"],
+        ["3 · تطبيق CWT", "Apply Continuous Wavelet Transform", "🖼️ Scalogram Studio (live)", "✅"],
+        ["3 · تحويل الإشارات إلى صور", "Signals → scalogram images", "🖼️ Studio · 🧪 Test Lab", "✅"],
+        ["3 · حفظ في مجلدات حسب الحالة", "Save images in class-labelled folders", "🗂️ Dataset Explorer (scalograms/<ch>/<class>/)", "✅"],
+        ["4 · قراءة الصور", "Read scalogram images", "🧠 Model · 🧪 Test Lab", "✅"],
+        ["4 · تدريب النموذج", "Train the model", "🧠 The CNN Model (training curves)", "✅"],
+        ["4 · تصنيف الحالات", "Classify the states", "🧪 Test Lab (live prediction)", "✅"],
+        ["4 · استخراج دقة التصنيف", "Extract classification accuracy", "📈 Results", "✅"],
+        ["5 · Accuracy", "Accuracy", "📈 Results", "✅"],
+        ["5 · Confusion Matrix", "Confusion matrix", "📈 Results (confusion images)", "✅"],
+        ["5 · أداء مع بيانات مختلفة", "Performance across data", "📈 (3 channels) · ablations", "✅"],
+        ["5 · تأثير عدد الصور وجودة البيانات", "Effect of #images & data quality", "📈 learning-curve + balancing/size", "✅"],
+        ["6 · تعديل عدد الطبقات", "Adjust number of layers", "🧠 depth design note (expander)", "✅"],
+        ["6 · تغيير حجم الصور", "Change image size", "📈 image-size ablation · 🖼️ Studio", "✅"],
+        ["6 · تحسين Dataset", "Improve dataset", "📈 balancing ablation", "✅"],
+        ["6 · تقليل Overfitting", "Reduce overfitting", "🧠 dropout/aug/early-stop/GAP", "✅"],
+        ["أدوات: Python / Wavelet / DL", "Python (PyWavelets + TF/Keras); MATLAB optional", "Whole pipeline", "✅"],
+    ], columns=["المتطلب (Requirement)", "Meaning", "Where in this lab", "Status"])
+    st.dataframe(cov, use_container_width=True, hide_index=True, height=560)
+
+    st.markdown("### Deliverables (beyond the lab)")
+    d1, d2, d3 = st.columns(3)
+    d1.markdown("**Dataset of images** — `data/scalograms/<ch>/<class>/` (3,150)")
+    d1.markdown("**Training code** — `python/` (+ 38 tests, CI)")
+    d2.markdown("**Final CNN models** — `models/cnn_{current,vibration,fusion}.keras`")
+    d2.markdown("**Plots & results** — `results/`")
+    d3.markdown("**Report 25–35 pp** — `docs/build/report.pdf` (EN) · `report-ar.pdf` (AR)")
+    d3.markdown("**Slides 15–20** — `docs/build/slides.pptx` · `slides-ar.pptx`")
+    st.success("All six subtasks, the required outputs, and the keywords are covered. "
+               "The only item that is documented-not-interactive is the layer-count study "
+               "(shown as a design rationale in 🧠 The CNN Model).")
+
 
 st.markdown("---")
 st.caption("PMSM Fault Diagnosis dashboard · github.com/molhamfetnah/pmsm-fault-diagnosis-cnn-scalogram")
