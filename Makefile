@@ -57,43 +57,45 @@ report:
 docs:
 	mkdir -p docs/build
 	$(PY) -m python.figures_engineering
-	cd docs/report && pandoc report.md -o ../build/report.pdf --pdf-engine=xelatex \
+	cd docs/report && pandoc report.md -o ../build/report.pdf --pdf-engine=xelatex -H ../_figfit.tex \
 		-V geometry:margin=2.5cm -V fontsize=12pt -V linestretch=1.5 \
 		-V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" --toc -V colorlinks=true
 	cd docs/report && pandoc engineering-background.md -o ../build/engineering-background.pdf \
-		--pdf-engine=xelatex -V geometry:margin=2.3cm -V fontsize=11pt -V linestretch=1.3 \
+		--pdf-engine=xelatex -H ../_figfit.tex -V geometry:margin=2.3cm -V fontsize=11pt -V linestretch=1.3 \
 		-V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" --toc -V colorlinks=true
 	cd docs/report && pandoc engineering-background.md -o ../build/engineering-background.docx --toc
 	cd docs/report && pandoc report.md -o ../build/report.docx --toc
 	cd docs/presentation && pandoc slides.md -o ../build/slides.pptx
 	cd docs/presentation && pandoc slides.md -t beamer -o ../build/slides.pdf \
-		--pdf-engine=xelatex -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V fontsize=9pt
+		--pdf-engine=xelatex -H ../_figfit.tex -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V fontsize=9pt
 	for f in build-walkthrough defense-study-guide; do \
-		pandoc docs/$$f.md -o docs/build/$$f.pdf --pdf-engine=xelatex \
+		pandoc docs/$$f.md -o docs/build/$$f.pdf --pdf-engine=xelatex -H docs/_figfit.tex \
 			-V geometry:margin=2.2cm -V fontsize=11pt -V mainfont="DejaVu Sans" \
 			-V monofont="DejaVu Sans Mono" --toc -V colorlinks=true; done
 
-# Arabic deliverables (RTL). DOCX/PPTX keep original symbols; the PDF is built from
-# a symbol-sanitized copy because Amiri lacks math/arrow glyphs. Needs the Amiri font.
+# Arabic deliverables (RTL). DOCX/PPTX keep original symbols; the PDF is built from a
+# prepped copy (_ar_pdf_prep: sanitize glyphs + force figures LTR/centered so RTL
+# bidi doesn't push them off-page). Needs the Amiri font + adjustbox (docs/_figfit.tex).
 docs-ar:
 	mkdir -p docs/build
 	$(PY) -m python.figures_engineering
 	cd docs/report && pandoc report-ar.md -o ../build/report-ar.docx --toc
-	$(PY) docs/_sanitize_for_pdf.py docs/report/engineering-background-ar.md docs/report/_ar_tmp.md
-	cd docs/report && pandoc _ar_tmp.md -o ../build/engineering-background-ar.pdf --pdf-engine=xelatex \
+	cd docs/report && pandoc engineering-background-ar.md -o ../build/engineering-background-ar.docx --toc
+	$(PY) docs/_ar_pdf_prep.py docs/report/engineering-background-ar.md docs/report/_ar_tmp.md
+	cd docs/report && pandoc _ar_tmp.md -o ../build/engineering-background-ar.pdf --pdf-engine=xelatex -H ../_figfit.tex \
 		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.3cm -V fontsize=12pt \
 		-V linestretch=1.4 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/report/_ar_tmp.md
-	cd docs/presentation && pandoc slides-ar.md -o ../build/slides-ar.pptx
-	$(PY) docs/_sanitize_for_pdf.py docs/report/report-ar.md docs/report/_ar_tmp.md
-	cd docs/report && pandoc _ar_tmp.md -o ../build/report-ar.pdf --pdf-engine=xelatex \
+	$(PY) docs/_ar_pdf_prep.py docs/report/report-ar.md docs/report/_ar_tmp.md
+	cd docs/report && pandoc _ar_tmp.md -o ../build/report-ar.pdf --pdf-engine=xelatex -H ../_figfit.tex \
 		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.5cm -V fontsize=12pt \
 		-V linestretch=1.5 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/report/_ar_tmp.md
-	$(PY) docs/_sanitize_for_pdf.py docs/presentation/slides-ar.md docs/presentation/_ar_tmp.md
-	cd docs/presentation && pandoc _ar_tmp.md -o ../build/slides-ar.pdf --pdf-engine=xelatex \
-		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2cm -V dir=rtl -V lang=ar; rm -f docs/presentation/_ar_tmp.md
+	cd docs/presentation && pandoc slides-ar.md -o ../build/slides-ar.pptx
+	$(PY) docs/_ar_pdf_prep.py docs/presentation/slides-ar.md docs/presentation/_ar_tmp.md --beamer
+	cd docs/presentation && pandoc _ar_tmp.md -t beamer -o ../build/slides-ar.pdf --pdf-engine=xelatex -H ../_figfit.tex \
+		-V mainfont="Amiri" -V monofont="Amiri" -V fontsize=9pt; rm -f docs/presentation/_ar_tmp.md
 	for f in build-walkthrough-ar defense-study-guide-ar; do \
 		$(PY) docs/_sanitize_for_pdf.py docs/$$f.md docs/_tmp.md; \
-		pandoc docs/_tmp.md -o docs/build/$$f.pdf --pdf-engine=xelatex \
+		pandoc docs/_tmp.md -o docs/build/$$f.pdf --pdf-engine=xelatex -H docs/_figfit.tex \
 			-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.2cm -V fontsize=12pt \
 			-V linestretch=1.4 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/_tmp.md; done
 

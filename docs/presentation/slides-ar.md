@@ -57,7 +57,7 @@ dir: rtl
 
 ## المحرك ونظام التحكّم
 
-![w:780](../figures/fig_foc_block.png)
+![](../figures/fig_foc_block.png)
 
 - عضو ثابت (ملف ثلاثي الطور) + عضو دوّار مغناطيسي؛ يُقاد بعاكس تحت **FOC**.
 - حلقة التيّار **ترفض الاضطرابات ← تُخفي بصمة العطل في التيّار**.
@@ -67,7 +67,7 @@ dir: rtl
 
 ## PMSM مقابل نظائره
 
-![w:880](../figures/fig_motor_comparison.png)
+![](../figures/fig_motor_comparison.png)
 
 - مقابل **PMDC**: نفس سهولة التحكّم بالعزم، لكن دون فُرَش ← صيانة أقل.
 - مقابل **BLDC**: قوة دافعة جيبية + FOC ← عزم أنعم وكفاءة أعلى.
@@ -77,7 +77,7 @@ dir: rtl
 
 ## كشف العطل — اليوم مقابل هذا العمل
 
-![w:820](../figures/fig_detection_taxonomy.png)
+![](../figures/fig_detection_taxonomy.png)
 
 - يدوي/خارج الخط (حراري، **Megger**، موجة صاعقة) ← يتطلّب إيقافاً، دوري.
 - متّصل MCSA/اهتزاز FFT ← عتبات ثابتة، يخدعها الحِمل/السرعة.
@@ -105,7 +105,7 @@ dir: rtl
 
 ## ٧. أمثلة على المخططات (بيانات KAIST الحقيقية)
 
-![w:1000](../../results/example_scalograms_real.png)
+![](../../results/example_scalograms_real.png)
 
 العطل بين اللفات يُثري محتوى الزمن–التردد في قناة **الاهتزاز** بوضوح.
 
@@ -168,7 +168,7 @@ dir: rtl
 
 ## ١٣. مصفوفات الالتباس
 
-![w:900](../../results/confusion_real_2class.png)
+![](../../results/confusion_real_2class.png)
 
 الاهتزاز مثالي؛ التيار يُخطئ معظم الأعطال؛ الدمج بينهما.
 

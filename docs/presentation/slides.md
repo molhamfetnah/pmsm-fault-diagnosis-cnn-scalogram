@@ -67,7 +67,7 @@ Turn a **signal** problem into an **image** problem.
 
 ## Motor & control system
 
-![w:780](../figures/fig_foc_block.png)
+![](../figures/fig_foc_block.png)
 
 - Stator (3-phase winding) + PM rotor; driven by an **inverter** under **FOC**.
 - The current loop **rejects disturbances → it masks the fault in the current**.
@@ -77,7 +77,7 @@ Turn a **signal** problem into an **image** problem.
 
 ## PMSM vs its relatives
 
-![w:880](../figures/fig_motor_comparison.png)
+![](../figures/fig_motor_comparison.png)
 
 - vs **PMDC**: same easy torque control, but no brushes → less maintenance.
 - vs **BLDC**: sinusoidal back-EMF + FOC → smoother torque, higher efficiency.
@@ -87,7 +87,7 @@ Turn a **signal** problem into an **image** problem.
 
 ## Detecting the fault — today vs this work
 
-![w:820](../figures/fig_detection_taxonomy.png)
+![](../figures/fig_detection_taxonomy.png)
 
 - Manual/offline (thermal, **Megger**, surge) → need shutdown, periodic.
 - Online MCSA/vibration FFT → fixed thresholds, fooled by load/speed.
@@ -117,7 +117,7 @@ Turn a **signal** problem into an **image** problem.
 
 ## 7. Example scalograms (real KAIST data)
 
-![w:1000](../../results/example_scalograms_real.png)
+![](../../results/example_scalograms_real.png)
 
 Inter-turn fault visibly **enriches the vibration time–frequency content**.
 
@@ -184,7 +184,7 @@ Held-out recordings, Healthy vs Inter-turn.
 
 ## 13. Confusion matrices
 
-![w:900](../../results/confusion_real_2class.png)
+![](../../results/confusion_real_2class.png)
 
 Vibration is perfect; current misses most faults; fusion is in between.
 

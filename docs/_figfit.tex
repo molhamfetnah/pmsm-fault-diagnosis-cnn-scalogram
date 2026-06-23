@@ -1,0 +1,13 @@
+% Robust image fit for both LTR and RTL (Arabic) docs.
+% pandoc emits \pandocbounded{\includegraphics...}. We redefine it to:
+%   * cap the image to the text box via \adjustbox (downscale only), and
+%   * place it inside a full-width, centered \makebox so RTL/bidi cannot flush
+%     it off the page.
+\usepackage[export]{adjustbox}
+\providecommand{\LR}[1]{#1}% LTR wrapper fallback (defined by pandoc when dir=rtl)
+\AtBeginDocument{%
+  \providecommand{\pandocbounded}[1]{#1}%
+  \renewcommand{\pandocbounded}[1]{%
+    \makebox[\linewidth][c]{\adjustbox{max width=\linewidth,max totalheight=0.8\textheight}{#1}}%
+  }%
+}
