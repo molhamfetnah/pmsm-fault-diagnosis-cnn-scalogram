@@ -112,7 +112,28 @@ of training images.
 
 ---
 
-## 4. Overfitting controls used
+## 4. Effect of network depth — number of conv layers (subtask 6)
+
+Number of convolution blocks varied (2 / 3 / 4), balanced training, 224 px.
+
+| Channel | 2 blocks | 3 blocks | 4 blocks |
+|---|---|---|---|
+| current (balanced acc) | 0.71 | 0.70 | 0.69 |
+| vibration (balanced acc) | 1.00 | 1.00 | 1.00 |
+
+Parameter counts (note: *fewer* blocks → *more* params, because less pooling
+leaves a larger feature map to flatten): 2-block ≈ 23.9M, 3-block ≈ 11.2M,
+4-block ≈ 5.1M.
+
+**Interpretation.** Depth barely changes the result. On **current**, accuracy is
+flat ~0.69–0.71 for all depths — consistent with the learning-curve finding that
+the current channel's ceiling is signal quality, not model capacity. On
+**vibration**, every depth is already perfect. We therefore keep **3 blocks** as
+the default: near-best accuracy with far fewer parameters than the shallow 2-block
+network and less overfitting risk than the deep 4-block one. Figure:
+`results/depth_ablation.png`.
+
+## 5. Overfitting controls used
 
 The pipeline mitigates overfitting with: 50 % **dropout** before the dense head;
 **global average pooling** in the fusion branches (far fewer parameters than
@@ -126,7 +147,7 @@ capacity.
 
 ---
 
-## 5. Summary of conclusions
+## 6. Summary of conclusions
 
 1. **Balance the training set and report balanced accuracy / per-class recall** —
    raw accuracy hides majority-class collapse on this imbalanced problem.
@@ -134,5 +155,7 @@ capacity.
    data and resolution to succeed.
 3. **For current, resolution helps but data quantity does not** — its ceiling is
    set by signal quality, not sample count.
+4. **Network depth barely matters** (2/3/4 blocks ≈ 0.69–0.71 on current, 1.00 on
+   vibration); 3 blocks chosen for the best accuracy/parameter trade-off.
 4. Sensible next steps: smaller (96 px) vibration images for speed; for current,
    pursue higher fault severities or fusion rather than more low-severity data.

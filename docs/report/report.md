@@ -648,7 +648,23 @@ help, whereas vibration succeeds with very little. This directly answers
 subtask 5: for this problem, dataset *quality* (channel, severity) dominates
 dataset *quantity*.
 
-### 9.4 Overfitting controls
+### 9.4 Effect of network depth (number of layers)
+
+| Channel | 2 blocks | 3 blocks | 4 blocks |
+|---|---|---|---|
+| current (balanced acc) | 0.71 | 0.70 | 0.69 |
+| vibration (balanced acc) | 1.00 | 1.00 | 1.00 |
+
+![Depth ablation](../../results/depth_ablation.png)
+
+*Figure 9.2 — Effect of the number of convolution blocks.* Depth barely changes
+the result: current stays ~0.69–0.71 (its limit is signal quality, not capacity),
+vibration is perfect at every depth. Note that *fewer* blocks means *more*
+parameters (less pooling → larger flattened map): 2-block ≈ 23.9M, 3-block ≈
+11.2M, 4-block ≈ 5.1M. **Three blocks** is the chosen default — near-best accuracy
+with a moderate parameter count and less overfitting risk than a deeper network.
+
+### 9.5 Overfitting controls
 
 Dropout (0.5), global average pooling in the fusion head, training augmentation
 (random flips), early stopping (patience 5, best-weights restore), and a small

@@ -196,5 +196,115 @@
       "healthy_recall": 1.0,
       "interturn_recall": 1.0
     }
+  ],
+  "depth": [
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "n_blocks": 2,
+      "filters": [
+        32,
+        64
+      ],
+      "accuracy": 0.536,
+      "balanced_acc": 0.71,
+      "macro_f1": 0.527,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.42
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 0.512,
+      "balanced_acc": 0.695,
+      "macro_f1": 0.506,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.39
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "n_blocks": 4,
+      "filters": [
+        32,
+        64,
+        128,
+        256
+      ],
+      "accuracy": 0.508,
+      "balanced_acc": 0.693,
+      "macro_f1": 0.502,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.385
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "n_blocks": 2,
+      "filters": [
+        32,
+        64
+      ],
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "n_blocks": 4,
+      "filters": [
+        32,
+        64,
+        128,
+        256
+      ],
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    }
   ]
 }

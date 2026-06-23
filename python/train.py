@@ -25,11 +25,13 @@ def compute_class_weights(df, *, classes, signal_type):
             for c in classes}
 
 
-def train_from_df(df, *, classes, signal_type, image_size, batch_size, epochs, seed):
+def train_from_df(df, *, classes, signal_type, image_size, batch_size, epochs, seed,
+                  filters=(32, 64, 128)):
     train_ds, _ = make_dataset(df, "train", signal_type, classes, image_size, batch_size, seed, augment=True)
     val_ds, _ = make_dataset(df, "val", signal_type, classes, image_size, batch_size, seed)
     class_weight = compute_class_weights(df, classes=classes, signal_type=signal_type)
-    model = build_cnn(input_shape=(image_size, image_size, 3), num_classes=len(classes))
+    model = build_cnn(input_shape=(image_size, image_size, 3), num_classes=len(classes),
+                      filters=tuple(filters))
     model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
     hist = model.fit(train_ds, validation_data=val_ds, epochs=epochs, class_weight=class_weight,
                      callbacks=[keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True)])

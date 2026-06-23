@@ -8,6 +8,11 @@ live test lab so you can try the model by hand.
 Run:  ./run_demo.sh      (or)   .venv/bin/python -m streamlit run app.py
 """
 import os
+# The dashboard does only tiny single-image inference — keep it on CPU so it never
+# competes for GPU VRAM with a training job (the 4 GB P620 can't host both, which
+# causes "Dst tensor is not initialized" on model load). Must be set before TF imports.
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "-1")
+os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
 import json
 import glob
 
@@ -378,8 +383,13 @@ deliberately for a few-thousand-image dataset:
   224-px map shrinks to ~14×14 then 7×7, losing useful resolution.
 - The **fusion** model further reduces parameters by replacing `Flatten` with
   **Global Average Pooling** — a depth/architecture change that cut memory and
-  overfitting. Depth interacts with **image size** (§Results) — bigger images
-  benefit the current channel, where finer detail survives more pooling stages.
+  overfitting.
+
+**Measured (depth ablation, see §Results → Depth):** balanced accuracy for 2/3/4
+blocks is current **0.71 / 0.70 / 0.69** and vibration **1.00 / 1.00 / 1.00** —
+depth barely moves the needle. Note fewer blocks means *more* parameters (less
+pooling → larger flatten): 2-block ≈ 23.9M vs 3-block ≈ 11.2M vs 4-block ≈ 5.1M.
+So **3 blocks** is the sweet spot: near-best accuracy, moderate size.
 """)
 
     if MODELS["current"] is not None:
@@ -438,7 +448,7 @@ elif page == "📈 Results & Ablations":
     st.markdown("### Ablation experiments")
     exp = load_json_safe("results/experiments_real.json")
     if exp:
-        t1, t2, t3 = st.tabs(["Balancing", "Image size", "Learning curve"])
+        t1, t2, t3, t4 = st.tabs(["Balancing", "Image size", "Learning curve", "Depth (#layers)"])
         with t1:
             d = pd.DataFrame(exp["balancing"])
             st.plotly_chart(px.bar(d, x="channel", y="balanced_acc", color="balanced",
@@ -458,6 +468,22 @@ elif page == "📈 Results & Ablations":
                             title="Effect of training-set size"), use_container_width=True)
             st.caption("Vibration needs ~46 images; current is flat — its limit is signal "
                        "quality, not quantity.")
+        with t4:
+            if exp.get("depth"):
+                d = pd.DataFrame(exp["depth"])
+                st.plotly_chart(px.line(d, x="n_blocks", y="balanced_acc", color="channel",
+                                markers=True, range_y=[0, 1.05],
+                                labels={"n_blocks": "number of conv blocks"},
+                                title="Effect of network depth (#conv layers)"),
+                                use_container_width=True)
+                st.dataframe(d[["channel", "n_blocks", "balanced_acc", "macro_f1",
+                                "interturn_recall"]], hide_index=True, use_container_width=True)
+                st.caption("Depth barely matters here: current plateaus ~0.69–0.71 for 2/3/4 "
+                           "blocks (signal-quality limit), vibration is 1.00 at every depth. "
+                           "3 blocks is the chosen default — near-best accuracy with fewer "
+                           "parameters than the 2-block net (less pooling → bigger flatten).")
+            else:
+                st.info("No depth runs yet. Run `.venv/bin/python -m python.experiments`.")
     elif os.path.exists("results/learning_curve.png"):
         st.image("results/learning_curve.png", use_container_width=True)
 
@@ -646,7 +672,7 @@ elif page == "✅ Requirements Coverage":
         ["5 · Confusion Matrix", "Confusion matrix", "📈 Results (confusion images)", "✅"],
         ["5 · أداء مع بيانات مختلفة", "Performance across data", "📈 (3 channels) · ablations", "✅"],
         ["5 · تأثير عدد الصور وجودة البيانات", "Effect of #images & data quality", "📈 learning-curve + balancing/size", "✅"],
-        ["6 · تعديل عدد الطبقات", "Adjust number of layers", "🧠 depth design note (expander)", "✅"],
+        ["6 · تعديل عدد الطبقات", "Adjust number of layers", "📈 Depth ablation (2/3/4 blocks) + 🧠 note", "✅"],
         ["6 · تغيير حجم الصور", "Change image size", "📈 image-size ablation · 🖼️ Studio", "✅"],
         ["6 · تحسين Dataset", "Improve dataset", "📈 balancing ablation", "✅"],
         ["6 · تقليل Overfitting", "Reduce overfitting", "🧠 dropout/aug/early-stop/GAP", "✅"],
@@ -662,9 +688,9 @@ elif page == "✅ Requirements Coverage":
     d2.markdown("**Plots & results** — `results/`")
     d3.markdown("**Report 25–35 pp** — `docs/build/report.pdf` (EN) · `report-ar.pdf` (AR)")
     d3.markdown("**Slides 15–20** — `docs/build/slides.pptx` · `slides-ar.pptx`")
-    st.success("All six subtasks, the required outputs, and the keywords are covered. "
-               "The only item that is documented-not-interactive is the layer-count study "
-               "(shown as a design rationale in 🧠 The CNN Model).")
+    st.success("All six subtasks, the required outputs, and the keywords are covered — "
+               "every one of them now has an interactive demonstration in the lab "
+               "(including the layer-count study, run as a real depth ablation).")
 
 
 st.markdown("---")

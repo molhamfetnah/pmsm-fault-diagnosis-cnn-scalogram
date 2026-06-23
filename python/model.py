@@ -2,17 +2,19 @@ from tensorflow import keras
 from tensorflow.keras import layers, Model, Input
 
 
-def build_cnn(input_shape=(224, 224, 3), num_classes=4):
-    return keras.Sequential([
-        keras.Input(shape=input_shape),
-        layers.Conv2D(32, 3, activation="relu"), layers.MaxPooling2D(),
-        layers.Conv2D(64, 3, activation="relu"), layers.MaxPooling2D(),
-        layers.Conv2D(128, 3, activation="relu"), layers.MaxPooling2D(),
+def build_cnn(input_shape=(224, 224, 3), num_classes=4, filters=(32, 64, 128)):
+    """Baseline CNN. `filters` is one entry per Conv+MaxPool block, so its length
+    sets the network depth (used by the depth ablation; default = 3 blocks)."""
+    seq = [keras.Input(shape=input_shape)]
+    for f in filters:
+        seq += [layers.Conv2D(f, 3, activation="relu"), layers.MaxPooling2D()]
+    seq += [
         layers.Flatten(),
         layers.Dropout(0.5),
         layers.Dense(128, activation="relu"),
         layers.Dense(num_classes, activation="softmax"),
-    ])
+    ]
+    return keras.Sequential(seq)
 
 
 def _branch(x):
