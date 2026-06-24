@@ -88,15 +88,15 @@ docs-ar:
 	$(PY) docs/_ar_pdf_prep.py docs/report/engineering-background-ar.md docs/report/_ar_tmp.md
 	cd docs/report && pandoc _ar_tmp.md -o ../build/engineering-background-ar.pdf --pdf-engine=xelatex -H ../_figfit.tex \
 		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.3cm -V fontsize=12pt \
-		-V linestretch=1.4 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/report/_ar_tmp.md
+		-V linestretch=1.4 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f _ar_tmp.md
 	$(PY) docs/_ar_pdf_prep.py docs/report/report-ar.md docs/report/_ar_tmp.md
 	cd docs/report && pandoc _ar_tmp.md -o ../build/report-ar.pdf --pdf-engine=xelatex -H ../_figfit.tex \
 		-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.5cm -V fontsize=12pt \
-		-V linestretch=1.5 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f docs/report/_ar_tmp.md
+		-V linestretch=1.5 -V dir=rtl -V lang=ar --toc -V colorlinks=true; rm -f _ar_tmp.md
 	cd docs/presentation && pandoc slides-ar.md -o ../build/slides-ar.pptx
 	$(PY) docs/_ar_pdf_prep.py docs/presentation/slides-ar.md docs/presentation/_ar_tmp.md --beamer
 	cd docs/presentation && pandoc _ar_tmp.md -t beamer -o ../build/slides-ar.pdf --pdf-engine=xelatex -H ../_figfit.tex \
-		-V mainfont="Amiri" -V monofont="Amiri" -V fontsize=9pt; rm -f docs/presentation/_ar_tmp.md
+		-V mainfont="Amiri" -V monofont="Amiri" -V fontsize=9pt; rm -f _ar_tmp.md
 	for f in build-walkthrough-ar defense-study-guide-ar; do \
 		$(PY) docs/_sanitize_for_pdf.py docs/$$f.md docs/_tmp.md; \
 		pandoc docs/_tmp.md -o docs/build/$$f.pdf --pdf-engine=xelatex -H docs/_figfit.tex \
