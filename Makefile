@@ -5,6 +5,7 @@ PY := .venv/bin/python
 PIP := .venv/bin/pip
 SIGNAL ?= current
 EPOCHS ?= 20
+ARCH ?= baseline
 
 .PHONY: help setup test demo simulate scalograms split train train-fusion evaluate report docs docs-ar clean
 
@@ -40,7 +41,7 @@ split:
 	$(PY) -m python.run_split
 
 train:
-	$(PY) -m python.train --signal-type $(SIGNAL) --epochs $(EPOCHS)
+	$(PY) -m python.train --signal-type $(SIGNAL) --epochs $(EPOCHS) --arch $(ARCH)
 
 evaluate:
 	$(PY) -m python.evaluate --signal-type $(SIGNAL)

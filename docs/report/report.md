@@ -671,7 +671,29 @@ parameters (less pooling → larger flattened map): 2-block ≈ 23.9M, 3-block �
 11.2M, 4-block ≈ 5.1M. **Three blocks** is the chosen default — near-best accuracy
 with a moderate parameter count and less overfitting risk than a deeper network.
 
-### 9.5 Overfitting controls
+### 9.5 Effect of model architecture (enhancing the CNN)
+
+Three architectures, balanced data, 224 px: **baseline** (from-scratch 3-block CNN),
+**modern** (Conv-BatchNorm-ReLU + global average pooling + LR scheduling), and
+**transfer** (frozen pretrained MobileNetV2 + small head).
+
+| Channel | baseline | modern | transfer |
+|---|---|---|---|
+| current (balanced acc) | 0.70 | 0.50 | **0.89** |
+| vibration (balanced acc) | 1.00 | 0.59 | 1.00 |
+
+![Architecture ablation](../../results/architecture_ablation.png)
+
+*Figure 9.3 — Architecture comparison.* **Transfer learning (MobileNetV2) is the
+clean, effective enhancement**: it raises the weak current channel from 0.70 to
+**0.89** (inter-turn recall 0.40 → 0.77) and keeps vibration at 1.00 — pretrained
+ImageNet features transfer well to scalograms despite not being natural images. The
+from-scratch *modern* variant collapsed on this small dataset (BatchNorm needs
+larger batches), confirming that with scarce data pretrained features beat fancier
+training. Train it with `make train SIGNAL=current ARCH=transfer` (or
+`--arch transfer`).
+
+### 9.6 Overfitting controls
 
 Dropout (0.5), global average pooling in the fusion head, training augmentation
 (random flips), early stopping (patience 5, best-weights restore), and a small

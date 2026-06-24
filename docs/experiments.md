@@ -133,7 +133,32 @@ the default: near-best accuracy with far fewer parameters than the shallow 2-blo
 network and less overfitting risk than the deep 4-block one. Figure:
 `results/depth_ablation.png`.
 
-## 5. Overfitting controls used
+## 5. Effect of model architecture (enhancing the CNN)
+
+Three architectures compared on the balanced data, 224 px, both channels:
+**baseline** (from-scratch 3-block CNN), **modern** (Conv-BatchNorm-ReLU + Global
+Average Pooling + LR scheduling), and **transfer** (pretrained MobileNetV2 backbone,
+frozen, + a small head).
+
+| Channel | baseline | modern | transfer |
+|---|---|---|---|
+| current (balanced acc) | 0.70 | 0.50 | **0.89** |
+| vibration (balanced acc) | 1.00 | 0.59 | 1.00 |
+
+Figure: `results/architecture_ablation.png`.
+
+**Interpretation.** **Transfer learning (MobileNetV2) is the clear, clean win** —
+it lifts the weak current channel from 0.70 to **0.89** (inter-turn recall
+0.40 → 0.77) while keeping vibration perfect. The pretrained ImageNet features
+(edges, textures) transfer surprisingly well to scalograms even though they are not
+natural photos. The from-scratch **modern** variant *collapsed* on this tiny
+dataset — BatchNorm needs larger batches/more data to estimate stable statistics,
+so it underperformed the plain baseline. The lesson: **when data is scarce,
+pretrained features beat fancier from-scratch training.** (Transfer learning is the
+recommended enhancement; it does not, however, lift vibration — already saturated —
+nor remove the four-healthy-recording limitation.)
+
+## 6. Overfitting controls used
 
 The pipeline mitigates overfitting with: 50 % **dropout** before the dense head;
 **global average pooling** in the fusion branches (far fewer parameters than
@@ -147,7 +172,7 @@ capacity.
 
 ---
 
-## 6. Summary of conclusions
+## 7. Summary of conclusions
 
 1. **Balance the training set and report balanced accuracy / per-class recall** —
    raw accuracy hides majority-class collapse on this imbalanced problem.
@@ -157,5 +182,8 @@ capacity.
    set by signal quality, not sample count.
 4. **Network depth barely matters** (2/3/4 blocks ≈ 0.69–0.71 on current, 1.00 on
    vibration); 3 blocks chosen for the best accuracy/parameter trade-off.
+5. **Transfer learning is the best model enhancement** — MobileNetV2 raises the
+   current channel to 0.89 (from 0.70); from-scratch "modernization" hurt on this
+   small dataset. Pretrained features > fancier training when data is scarce.
 4. Sensible next steps: smaller (96 px) vibration images for speed; for current,
    pursue higher fault severities or fusion rather than more low-severity data.

@@ -306,5 +306,121 @@
       "healthy_recall": 1.0,
       "interturn_recall": 1.0
     }
+  ],
+  "architecture": [
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "arch": "baseline",
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 0.516,
+      "balanced_acc": 0.698,
+      "macro_f1": 0.509,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.395
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "arch": "modern",
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 0.2,
+      "balanced_acc": 0.5,
+      "macro_f1": 0.167,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.0
+    },
+    {
+      "channel": "current",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "arch": "transfer",
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 0.816,
+      "balanced_acc": 0.885,
+      "macro_f1": 0.777,
+      "healthy_recall": 1.0,
+      "interturn_recall": 0.77
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "arch": "baseline",
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "arch": "modern",
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 0.836,
+      "balanced_acc": 0.59,
+      "macro_f1": 0.606,
+      "healthy_recall": 0.18,
+      "interturn_recall": 1.0
+    },
+    {
+      "channel": "vibration",
+      "image_size": 224,
+      "balanced": true,
+      "train_frac": 1.0,
+      "n_train": 200,
+      "arch": "transfer",
+      "n_blocks": 3,
+      "filters": [
+        32,
+        64,
+        128
+      ],
+      "accuracy": 1.0,
+      "balanced_acc": 1.0,
+      "macro_f1": 1.0,
+      "healthy_recall": 1.0,
+      "interturn_recall": 1.0
+    }
   ]
 }

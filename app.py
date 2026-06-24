@@ -625,7 +625,8 @@ elif page == "📈 Results & Ablations":
     st.markdown("### Ablation experiments")
     exp = load_json_safe("results/experiments_real.json")
     if exp:
-        t1, t2, t3, t4 = st.tabs(["Balancing", "Image size", "Learning curve", "Depth (#layers)"])
+        t1, t2, t3, t4, t5 = st.tabs(["Balancing", "Image size", "Learning curve",
+                                      "Depth (#layers)", "Architecture"])
         with t1:
             d = pd.DataFrame(exp["balancing"])
             st.plotly_chart(px.bar(d, x="channel", y="balanced_acc", color="balanced",
@@ -661,6 +662,22 @@ elif page == "📈 Results & Ablations":
                            "parameters than the 2-block net (less pooling → bigger flatten).")
             else:
                 st.info("No depth runs yet. Run `.venv/bin/python -m python.experiments`.")
+        with t5:
+            if exp.get("architecture"):
+                d = pd.DataFrame(exp["architecture"])
+                st.plotly_chart(px.bar(d, x="arch", y="balanced_acc", color="channel",
+                                barmode="group", range_y=[0, 1.05],
+                                category_orders={"arch": ["baseline", "modern", "transfer"]},
+                                title="Architecture — baseline vs modernized vs transfer learning"),
+                                use_container_width=True)
+                st.dataframe(d[["channel", "arch", "balanced_acc", "macro_f1", "interturn_recall"]],
+                             hide_index=True, use_container_width=True)
+                st.success("**Transfer learning (MobileNetV2) is the clean win:** it lifts the weak "
+                           "current channel 0.70 → 0.89 and keeps vibration at 1.00. The from-scratch "
+                           "'modern' BatchNorm+GAP variant collapses on this tiny dataset — a good "
+                           "reminder that pretrained features beat fancier training when data is scarce.")
+            else:
+                st.info("No architecture runs yet.")
     elif os.path.exists("results/learning_curve.png"):
         st.image("results/learning_curve.png", use_container_width=True)
 
