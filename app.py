@@ -112,6 +112,94 @@ def prob_bars(p):
     return fig
 
 
+def grad_cam(model, img_array, pred_index=None):
+    """Grad-CAM heatmap (0..1, HxW) for the last conv layer of a single-branch CNN.
+    Re-applies the trained layers to a fresh Input (Keras 3 doesn't expose a loaded
+    Sequential's symbolic outputs)."""
+    import tensorflow as tf
+    x = tf.keras.Input(shape=img_array.shape[1:])
+    y, conv_out = x, None
+    for layer in model.layers:
+        y = layer(y)
+        if "conv" in layer.__class__.__name__.lower():
+            conv_out = y
+    if conv_out is None:
+        return None
+    grad_model = tf.keras.Model(x, [conv_out, y])
+    with tf.GradientTape() as tape:
+        co, preds = grad_model(img_array)
+        idx = int(tf.argmax(preds[0])) if pred_index is None else pred_index
+        loss = preds[:, idx]
+    grads = tape.gradient(loss, co)
+    pooled = tf.reduce_mean(grads, axis=(0, 1, 2))
+    heat = tf.squeeze(co[0] @ pooled[..., None])
+    heat = tf.maximum(heat, 0) / (tf.reduce_max(heat) + 1e-9)
+    return heat.numpy()
+
+
+def gradcam_overlay(pil_img, heat, size=IMAGE_SIZE):
+    """Blend a Grad-CAM heatmap over the scalogram as an RGB image."""
+    base = np.array(pil_img.convert("RGB").resize((size, size))) / 255.0
+    hm = np.array(Image.fromarray((heat * 255).astype("uint8")).resize((size, size))) / 255.0
+    color = cm.jet(hm)[..., :3]
+    out = (0.55 * base + 0.45 * color)
+    return (out / out.max() * 255).astype("uint8")
+
+
+def fig_backemf():
+    t = np.linspace(0, 2 * np.pi, 400)
+    fig = go.Figure()
+    fig.add_scatter(x=t, y=np.sin(t), name="PMSM (sinusoidal)", line=dict(color=CLASS_COLORS["Healthy"]))
+    fig.add_scatter(x=t, y=np.clip(2.2 * np.sin(t), -1, 1), name="BLDC (trapezoidal)",
+                    line=dict(color=CLASS_COLORS["InterTurn"]))
+    fig.update_layout(title="Back-EMF shape (interactive)", xaxis_title="electrical angle (rad)",
+                      yaxis_title="back-EMF (pu)", height=320, margin=dict(l=0, r=0, t=35, b=0))
+    return fig
+
+
+def fig_torque_speed():
+    n = np.linspace(0, 2, 400)
+    T = np.where(n <= 1, 1.0, 1 / np.clip(n, 1e-3, None))
+    fig = go.Figure(go.Scatter(x=n, y=T, fill="tozeroy", line=dict(color="#2c6fbb")))
+    fig.add_vline(x=1, line_dash="dash", line_color="#7f8c8d")
+    fig.add_annotation(x=0.5, y=0.5, text="constant torque", showarrow=False)
+    fig.add_annotation(x=1.5, y=0.5, text="field weakening", showarrow=False)
+    fig.update_layout(title="Torque–speed envelope (interactive)", xaxis_title="speed (pu)",
+                      yaxis_title="torque (pu)", height=320, margin=dict(l=0, r=0, t=35, b=0))
+    return fig
+
+
+def fig_method_improvement():
+    sev = np.linspace(0, 1, 120) * 100
+    fft = 100 / (1 + np.exp(-(sev / 100 - 0.55) * 12))
+    cnn = 100 / (1 + np.exp(-(sev / 100 - 0.25) * 12))
+    fig = go.Figure()
+    fig.add_scatter(x=sev, y=fft, name="FFT + fixed threshold", line=dict(color="#f39c12"))
+    fig.add_scatter(x=sev, y=cnn, name="CWT scalogram + CNN", line=dict(color="#2ecc71"),
+                    fill="tonexty", fillcolor="rgba(46,204,113,0.12)")
+    fig.update_layout(title="Detection probability vs fault severity (interactive)",
+                      xaxis_title="fault severity (%)", yaxis_title="detection probability (%)",
+                      height=340, margin=dict(l=0, r=0, t=35, b=0))
+    return fig
+
+
+def fig_mcsa():
+    from python.simulate import build_signal, F0
+    rng = np.random.default_rng(0)
+    h = build_signal("Healthy", 0.0, fs=TARGET_FS, duration=1.0, rng=rng)
+    f = build_signal("InterTurn", 0.7, fs=TARGET_FS, duration=1.0, rng=rng)
+    fr = np.fft.rfftfreq(len(h), 1 / TARGET_FS)
+    k = fr <= 400
+    fig = go.Figure()
+    fig.add_scatter(x=fr[k], y=np.abs(np.fft.rfft(h))[k] + 1, name="Healthy", line=dict(color="#2c6fbb"))
+    fig.add_scatter(x=fr[k], y=np.abs(np.fft.rfft(f))[k] + 1, name="Inter-turn", line=dict(color="#e74c3c"))
+    fig.update_yaxes(type="log")
+    fig.update_layout(title="MCSA spectrum (interactive) — fault raises harmonics/side-bands",
+                      xaxis_title="frequency (Hz)", yaxis_title="magnitude (log)",
+                      height=340, margin=dict(l=0, r=0, t=35, b=0))
+    return fig
+
+
 MANIFEST = load_manifest_safe()
 MODELS = {"current": load_model("cnn_current.keras"),
           "vibration": load_model("cnn_vibration.keras"),
@@ -146,8 +234,9 @@ st.sidebar.markdown(f"""**Environment**
 {ok(MODELS['vibration'] is not None)} vibration model
 {ok(MODELS['fusion'] is not None)} fusion model""")
 st.sidebar.markdown("---")
-st.sidebar.markdown("**Authors:** Mulham Fetna · Mohammad Zein Qabbani")
-st.sidebar.caption("«Supervisor / University» — fill on the cover")
+st.sidebar.markdown("**Students:** Mulham Fetna · Mohammad Zein Qabbani")
+st.sidebar.caption("Aleppo University · Faculty of Electrical & Electronic Eng. · "
+                   "Dept. of Mechatronics · Supervisor: Eng. Saad Almoustafa · Fourth Year")
 
 
 # =========================================================================== #
@@ -255,8 +344,8 @@ the rotor magnets lock to it and turn **in synchronism** — no slip, no rotor
 current → high efficiency. Torque ∝ **i_q** (the q-axis current), with **i_d ≈ 0**.""")
         c1, c2 = st.columns(2)
         with c1: fig("docs/figures/fig_rotating_field.png", "3-phase currents → rotating field")
-        with c2: fig("docs/figures/fig_backemf_comparison.png", "Sinusoidal back-EMF (PMSM) vs trapezoidal (BLDC)")
-        fig("docs/figures/fig_torque_speed.png", "Torque–speed: constant-torque then field-weakening")
+        with c2: st.plotly_chart(fig_backemf(), use_container_width=True)
+        st.plotly_chart(fig_torque_speed(), use_container_width=True)
     with tabs[2]:
         st.markdown("""
 A PMSM runs under **Field-Oriented Control**: speed PI → torque command `i_q*`;
@@ -302,16 +391,15 @@ elif page == "🛠️ Fault Detection Methods":
 → *assume stationarity; analyst must know which frequency*
 """)
     st.markdown("### The classic manual signature (MCSA) and the fault mechanism")
-    c3, c4 = st.columns(2)
-    with c3: fig("docs/figures/fig_interturn_mechanism.png", "Inter-turn short: shorted turns → circulating current → heat")
-    with c4: fig("docs/figures/fig_mcsa_spectrum.png", "MCSA: a fault raises harmonics/side-bands")
+    fig("docs/figures/fig_interturn_mechanism.png", "Inter-turn short: shorted turns → circulating current → heat")
+    st.plotly_chart(fig_mcsa(), use_container_width=True)
     st.markdown("### Why this project's CWT + CNN improves on them")
     st.markdown("""
 Captures **non-stationary** signatures (CWT keeps time *and* frequency), **learns**
 the features automatically (no hand-picked frequency), is **robust to operating
 point**, and detects **earlier / at lower severity** than a fixed-threshold FFT
 alarm — running online on sensors the drive already has.""")
-    fig("docs/figures/fig_method_improvement.png", "Earlier detection vs fixed-threshold FFT")
+    st.plotly_chart(fig_method_improvement(), use_container_width=True)
     st.success("This complements (does not replace) offline commissioning tests — it adds a "
                "continuous, intelligent online monitor.")
 
@@ -672,6 +760,22 @@ elif page == "🧪 Test Lab (try it by hand)":
             r1, r2 = st.columns([1, 2])
             r1.metric("AI diagnosis", pred, f"{conf:.1f}% confidence")
             r2.plotly_chart(prob_bars(p), use_container_width=True)
+            if channel in ("current", "vibration") and st.checkbox(
+                    "🔥 Show Grad-CAM (where the CNN looks)", value=True):
+                try:
+                    arr = np.expand_dims(np.array(img.convert("RGB").resize((IMAGE_SIZE, IMAGE_SIZE))) / 255.0, 0)
+                    heat = grad_cam(model, arr.astype("float32"), int(np.argmax(p)))
+                    if heat is not None:
+                        g1, g2 = st.columns(2)
+                        g1.image(img, caption="scalogram (input)", use_container_width=True)
+                        g2.image(gradcam_overlay(img, heat),
+                                 caption="Grad-CAM — regions driving the diagnosis (red = most important)",
+                                 use_container_width=True)
+                        st.caption("Grad-CAM highlights the time–frequency regions the CNN "
+                                   "weighted most — useful to confirm it attends to physically "
+                                   "meaningful bands, not artefacts.")
+                except Exception as e:
+                    st.caption(f"Grad-CAM unavailable: {e}")
             if truth != "Unknown":
                 quiz_guess = st.session_state.pop("_quiz_guess", None)
                 if quiz_guess is not None:

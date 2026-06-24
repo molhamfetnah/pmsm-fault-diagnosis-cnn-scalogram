@@ -1,13 +1,13 @@
 # Fault Diagnosis of PMSM Motors using Convolutional Neural Networks on Wavelet Scalogram Images
 
-**«University Name — Faculty of Engineering»**
-**«Department / Program»**
+**Aleppo University — Faculty of Electrical & Electronic Engineering**
+**Department of Mechatronics Engineering**
 
 **Research seminar report**
 
 Students: **Mulham Fetna**, **Mohammad Zein Qabbani**
-Supervisor: **«Dr. Supervisor Name»**
-Academic year: **«2025–2026»**
+Supervisor: **Eng. Saad Almoustafa**
+Year: **Fourth Year**
 
 ---
 

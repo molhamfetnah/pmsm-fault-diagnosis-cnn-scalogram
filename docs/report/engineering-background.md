@@ -1,6 +1,9 @@
 # PMSM Machines, Control, and Fault Diagnosis — Engineering Background
 
-*Industrial Electrical Appliances Lab · Mechatronics Engineering.* This chapter
+*Aleppo University — Faculty of Electrical & Electronic Engineering, Department of
+Mechatronics Engineering. Industrial Electrical Appliances Lab. Students: Mulham
+Fetna, Mohammad Zein Qabbani. Supervisor: Eng. Saad Almoustafa (Fourth Year).*
+This chapter
 provides the electrical-machines and control-engineering foundation for the
 project. It explains the motor itself, its drive/control system, each fault and
 how it arises, how such faults are detected today (manually and by existing

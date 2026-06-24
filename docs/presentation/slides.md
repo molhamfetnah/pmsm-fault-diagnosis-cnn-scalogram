@@ -6,11 +6,11 @@ paginate: true
 
 # PMSM Fault Diagnosis using Wavelet Scalograms + CNN
 
-**«University Name — Faculty»** · **«Department / Program»**
+**Aleppo University — Faculty of Electrical & Electronic Engineering** · **Department of Mechatronics Engineering**
 
 Students: **Mulham Fetna** · **Mohammad Zein Qabbani**
 
-Supervisor: **«Dr. Supervisor Name»**  ·  Academic year: **«2025–2026»**
+Supervisor: **Eng. Saad Almoustafa**  ·  Year: **Fourth Year**
 
 *Research seminar — CNN classification of PMSM operating states from
 time–frequency images*
