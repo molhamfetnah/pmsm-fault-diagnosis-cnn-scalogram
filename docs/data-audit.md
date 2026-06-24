@@ -40,6 +40,31 @@ Findings from auditing the candidate sources in `references.md` (June 2026).
 | Kaggle pmsm-smart-control | https://www.kaggle.com/datasets/ziya07/pmsm-smart-control-dataset | control/tabular | — | low | — | not needed (login-gated, control data) |
 | IEEE-DataPort PMSM ITSC | https://ieee-dataport.org/documents/three-phase-pmsm-itsc-faults-stator-winding-dataset | current | inter-turn | — | gated | alternative if Mendeley unavailable |
 
+## Additional datasets mined (June 2026) — to expand healthy diversity
+
+A second, deeper search (beyond §"Candidate sources") for sets that add **healthy
+-recording diversity** and the missing classes. Verdicts are honest about access.
+
+| name | host / DOI | signal & fs | classes / conditions | format / size | license | access | verdict |
+|---|---|---|---|---|---|---|---|
+| **PMSM with ITSC faults of stator winding** (Xu et al.) | IEEE DataPort, doi:10.21227/4jpc-qh81 | 3-phase voltage + current + short-circuit current (rate not stated on page; high) | ITSC: **12 torque-speed conditions × 9 shorted-turn % × 3 SC-resistances** | MAT, **66.9 GB** | custom (license file) | **gated — IEEE DataPort subscription / IEEE membership** | **Best for ITSC operating-condition diversity** if you have IEEE access. Huge; healthy baseline not clearly stated. |
+| **Multimodal PMSM-driven elevator** | Zenodo 15613954 | current **@ 4 kHz** (raw, usable for CWT); vibration @ 10 Hz (too slow) | **healthy at 4 loads × 2 directions** + partial stator short-circuit at 2 loads; vibration: eccentricity/imbalance | Excel (.xlsx) | CC-BY-4.0 | **restricted — request access on Zenodo** (0 public files) | **Adds real-world healthy *current* diversity** — exactly our gap — *if* the authors grant access. Current-channel only (vibration unusable). |
+| University of Ottawa UOEMD-VAFCVS | Mendeley doi:10.17632/msxs4vj48g | vibration + acoustic + temp **@ 42 kHz** | healthy, stator winding, bearing, unbalance, misalignment, broken bar… (8 motors) | CSV/MAT | CC-BY | open (Mendeley web download) | **Fallback only — INDUCTION motors, not PMSM**; high-rate vibration/acoustic. Useful for a cross-machine transfer/robustness experiment, not as PMSM data. |
+
+**Recommendation.** No *open, free, scriptable* PMSM set adds healthy diversity:
+the two real PMSM complements are **gated** (IEEE DataPort subscription) or
+**restricted** (Zenodo access request). Order to pursue:
+1. **Zenodo 15613954** — request access (CC-BY; adds healthy current diversity in a
+   real elevator context). Lowest effort if granted.
+2. **IEEE DataPort 4jpc-qh81** — if you/your university has an IEEE DataPort
+   subscription; richest ITSC condition coverage.
+3. **UoO UOEMD-VAFCVS** — open, but induction; use only for a transfer/robustness
+   side-experiment (our scalogram+CNN method transfers across machines).
+
+The KAIST set (§above) remains the best PMSM source we can fully use; the
+four-healthy-recording limit is a property of the *public PMSM data landscape*, not
+just our choice.
+
 ## How to verify access
 
 ```bash
