@@ -53,6 +53,11 @@ overload signatures add visible sidebands and harmonics.
 
 Requires **Python 3.10–3.12** (TensorFlow has no wheel for 3.13/3.14 yet).
 
+> **Windows / macOS / Linux step-by-step setup:** see
+> [`docs/run-guide.md`](docs/run-guide.md) (built to `docs/build/run-guide.pdf`) —
+> a no-prior-setup guide with per-OS venv/activation commands and raw equivalents
+> for every `make` target (so it works without `make` on Windows).
+
 ```bash
 make setup     # create .venv on python3.10 and install requirements
 make test      # run the test suite (should be all green)

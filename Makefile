@@ -72,7 +72,7 @@ docs:
 	cd docs/presentation && pandoc slides.md -o ../build/slides.pptx
 	cd docs/presentation && pandoc slides.md -t beamer -o ../build/slides.pdf \
 		--pdf-engine=xelatex -H ../_figfit.tex -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V fontsize=9pt
-	for f in build-walkthrough defense-study-guide; do \
+	for f in build-walkthrough defense-study-guide run-guide; do \
 		pandoc docs/$$f.md -o docs/build/$$f.pdf --pdf-engine=xelatex -H docs/_figfit.tex \
 			-V geometry:margin=2.2cm -V fontsize=11pt -V mainfont="DejaVu Sans" \
 			-V monofont="DejaVu Sans Mono" --toc -V colorlinks=true; done
