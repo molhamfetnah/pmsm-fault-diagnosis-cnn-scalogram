@@ -49,6 +49,9 @@ evaluate:
 train-fusion:
 	$(PY) -m python.train_fusion --epochs $(EPOCHS)
 
+transfer:
+	$(PY) -m python.transfer_experiment
+
 report:
 	$(PY) -m python.report_metrics
 

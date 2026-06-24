@@ -24,13 +24,19 @@ F0 = 50.0     # supply fundamental (Hz)
 FR = 12.0     # rotor mechanical frequency (Hz)
 
 
-def build_signal(klass, severity, *, fs, duration, rng):
+def build_signal(klass, severity, *, fs, duration, rng,
+                 f0=None, fr=None, load=None, noise=None):
+    """Synthesise one stator-current window. Optional `f0` (supply Hz), `fr` (rotor
+    Hz), `load` (amplitude/torque factor) and `noise` (std) let a caller create many
+    diverse "virtual motors"; when omitted they fall back to defaults + small jitter
+    (so the original behaviour is unchanged)."""
     t = np.arange(int(fs * duration)) / fs
-    # per-recording variation
-    f0 = F0 * (1 + rng.uniform(-0.01, 0.01))
+    # per-recording variation (overridable for richer synthetic diversity)
+    f0 = (f0 if f0 is not None else F0) * (1 + rng.uniform(-0.01, 0.01))
+    fr = fr if fr is not None else FR
     phi = rng.uniform(0, 2 * np.pi)
-    amp = 1.0 + rng.uniform(-0.05, 0.05)
-    noise_std = 0.05
+    amp = load if load is not None else (1.0 + rng.uniform(-0.05, 0.05))
+    noise_std = noise if noise is not None else 0.05
 
     x = amp * np.sin(2 * np.pi * f0 * t + phi)
     # baseline small odd harmonics present in any real winding
@@ -41,12 +47,12 @@ def build_signal(klass, severity, *, fs, duration, rng):
         s = max(severity, 0.05)
         x += 0.30 * s * np.sin(2 * np.pi * 3 * f0 * t + rng.uniform(0, 1))
         x += 0.20 * s * np.sin(2 * np.pi * 5 * f0 * t + rng.uniform(0, 1))
-        x += 0.15 * s * np.sin(2 * np.pi * (f0 + 2 * FR) * t)   # sideband
+        x += 0.15 * s * np.sin(2 * np.pi * (f0 + 2 * fr) * t)   # sideband
     elif klass == "Demagnetization":
         x += 0.18 * np.sin(2 * np.pi * 0.5 * f0 * t)            # sub-harmonic
         for k in (1, 2, 3):
-            x += 0.10 * np.sin(2 * np.pi * (f0 + k * FR) * t)
-            x += 0.10 * np.sin(2 * np.pi * (f0 - k * FR) * t)
+            x += 0.10 * np.sin(2 * np.pi * (f0 + k * fr) * t)
+            x += 0.10 * np.sin(2 * np.pi * (f0 - k * fr) * t)
     elif klass == "Overload":
         x = 1.6 * amp * np.sin(2 * np.pi * f0 * t + phi)
         x += 0.15 * np.sin(2 * np.pi * 2 * f0 * t)              # even harmonic distortion

@@ -158,7 +158,32 @@ pretrained features beat fancier from-scratch training.** (Transfer learning is 
 recommended enhancement; it does not, however, lift vibration — already saturated —
 nor remove the four-healthy-recording limitation.)
 
-## 6. Overfitting controls used
+## 6. Generated-data strategies — does synthetic data help? (honest negative)
+
+We tested whether *generating* data can lift the weak current channel, evaluated on
+the real held-out current test set (`python/transfer_experiment.py`):
+
+| Strategy | balanced acc | healthy recall | inter-turn recall |
+|---|---|---|---|
+| baseline (real, flip aug) | 0.698 | 1.00 | 0.40 |
+| + SpecAugment (time/freq masking + noise) | 0.708 | 1.00 | 0.42 |
+| synthetic pre-train → real fine-tune | **0.352** | 0.00 | 0.71 |
+
+Figure: `results/transfer_experiment.png`.
+
+**Interpretation (important, and good for the viva).** Generated data did **not**
+help: SpecAugment gave a negligible +0.01, and **pre-training on our rich synthetic
+dataset actively hurt** (0.70 → 0.35, healthy recall collapsing to 0). The reason is
+a **domain gap** — the synthetic "healthy" signal is our own stylised model, so
+pre-training biases the network toward synthetic statistics that the small real set
+can't correct. This contrasts sharply with **ImageNet transfer learning** (§5),
+which *helped* (0.89): generic real-world features transfer, a narrow hand-built
+simulator does not. The honest conclusion is the one stated throughout: **the real
+limitation is real-data diversity, which synthesis cannot manufacture.** Synthetic
+data remains valuable for software validation and for the Demagnetization/Overload
+classes the real data lacks — but not as a substitute for real recordings.
+
+## 7. Overfitting controls used
 
 The pipeline mitigates overfitting with: 50 % **dropout** before the dense head;
 **global average pooling** in the fusion branches (far fewer parameters than
@@ -172,7 +197,7 @@ capacity.
 
 ---
 
-## 7. Summary of conclusions
+## 8. Summary of conclusions
 
 1. **Balance the training set and report balanced accuracy / per-class recall** —
    raw accuracy hides majority-class collapse on this imbalanced problem.
@@ -185,5 +210,8 @@ capacity.
 5. **Transfer learning is the best model enhancement** — MobileNetV2 raises the
    current channel to 0.89 (from 0.70); from-scratch "modernization" hurt on this
    small dataset. Pretrained features > fancier training when data is scarce.
+6. **Generated data does not substitute for real data** — SpecAugment barely helped
+   (+0.01) and synthetic pre-training *hurt* (0.70 → 0.35, domain gap). Real-data
+   diversity is the true lever; synthesis is for validation + the missing classes.
 4. Sensible next steps: smaller (96 px) vibration images for speed; for current,
    pursue higher fault severities or fusion rather than more low-severity data.

@@ -625,8 +625,8 @@ elif page == "📈 Results & Ablations":
     st.markdown("### Ablation experiments")
     exp = load_json_safe("results/experiments_real.json")
     if exp:
-        t1, t2, t3, t4, t5 = st.tabs(["Balancing", "Image size", "Learning curve",
-                                      "Depth (#layers)", "Architecture"])
+        t1, t2, t3, t4, t5, t6 = st.tabs(["Balancing", "Image size", "Learning curve",
+                                          "Depth (#layers)", "Architecture", "Generated data"])
         with t1:
             d = pd.DataFrame(exp["balancing"])
             st.plotly_chart(px.bar(d, x="channel", y="balanced_acc", color="balanced",
@@ -678,6 +678,24 @@ elif page == "📈 Results & Ablations":
                            "reminder that pretrained features beat fancier training when data is scarce.")
             else:
                 st.info("No architecture runs yet.")
+        with t6:
+            tx = load_json_safe("results/transfer_experiment.json")
+            if tx:
+                d = pd.DataFrame([{"strategy": k, **v} for k, v in tx.items()])
+                order = {"baseline": 0, "augment": 1, "synth_pretrain": 2}
+                d = d.sort_values("strategy", key=lambda s: s.map(order))
+                st.plotly_chart(px.bar(d, x="strategy", y="balanced_acc", range_y=[0, 1.05],
+                                color="strategy", text="balanced_acc",
+                                title="Does generated data help the real current channel?"),
+                                use_container_width=True)
+                st.dataframe(d[["strategy", "balanced_acc", "macro_f1", "healthy_recall",
+                                "interturn_recall"]], hide_index=True, use_container_width=True)
+                st.warning("**Honest negative result.** SpecAugment barely helped (+0.01) and "
+                           "synthetic pre-training *hurt* (0.70→0.35, a domain gap). Generated data "
+                           "can't substitute for real-recording diversity — unlike ImageNet transfer "
+                           "(Architecture tab, 0.89), where generic real-world features do transfer.")
+            else:
+                st.info("Run `.venv/bin/python -m python.transfer_experiment` to populate this.")
     elif os.path.exists("results/learning_curve.png"):
         st.image("results/learning_curve.png", use_container_width=True)
 

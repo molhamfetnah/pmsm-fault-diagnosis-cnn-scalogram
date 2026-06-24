@@ -35,8 +35,9 @@ def _build(arch, image_size, n_classes, filters):
 
 
 def train_from_df(df, *, classes, signal_type, image_size, batch_size, epochs, seed,
-                  filters=(32, 64, 128), arch="baseline"):
-    train_ds, _ = make_dataset(df, "train", signal_type, classes, image_size, batch_size, seed, augment=True)
+                  filters=(32, 64, 128), arch="baseline", aug_mode="flip"):
+    train_ds, _ = make_dataset(df, "train", signal_type, classes, image_size, batch_size, seed,
+                               augment=True, aug_mode=aug_mode)
     val_ds, _ = make_dataset(df, "val", signal_type, classes, image_size, batch_size, seed)
     class_weight = compute_class_weights(df, classes=classes, signal_type=signal_type)
     model = _build(arch, image_size, len(classes), filters)

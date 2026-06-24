@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "balanced_acc": 0.698,
+    "macro_f1": 0.509,
+    "healthy_recall": 1.0,
+    "interturn_recall": 0.395
+  },
+  "augment": {
+    "balanced_acc": 0.708,
+    "macro_f1": 0.524,
+    "healthy_recall": 1.0,
+    "interturn_recall": 0.415
+  },
+  "synth_pretrain": {
+    "balanced_acc": 0.352,
+    "macro_f1": 0.361,
+    "healthy_recall": 0.0,
+    "interturn_recall": 0.705
+  }
+}

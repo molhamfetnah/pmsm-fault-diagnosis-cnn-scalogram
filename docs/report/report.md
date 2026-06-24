@@ -693,7 +693,30 @@ larger batches), confirming that with scarce data pretrained features beat fanci
 training. Train it with `make train SIGNAL=current ARCH=transfer` (or
 `--arch transfer`).
 
-### 9.6 Overfitting controls
+### 9.6 Can generated data help? (synthetic pre-training & augmentation)
+
+We tested whether *generating* data lifts the weak current channel, on the real
+held-out current test set:
+
+| Strategy | balanced acc | healthy recall | inter-turn recall |
+|---|---|---|---|
+| baseline | 0.70 | 1.00 | 0.40 |
+| + SpecAugment | 0.71 | 1.00 | 0.42 |
+| synthetic pre-train → real fine-tune | **0.35** | 0.00 | 0.71 |
+
+![Generated-data strategies](../../results/transfer_experiment.png)
+
+*Figure 9.4 — Generated-data strategies on the real current channel.* The result is
+an honest negative: augmentation gave a negligible gain and **pre-training on our
+rich synthetic dataset hurt** (0.70 → 0.35) — a **domain gap**, because the
+synthetic "healthy" signal is a stylised model whose statistics the small real set
+cannot correct. This contrasts with ImageNet transfer (§9.5, 0.89): *generic
+real-world* features transfer; a narrow hand-built simulator does not. Conclusion:
+synthetic data is valuable for software validation and the Demagnetization/Overload
+classes, **but cannot substitute for real-recording diversity** — the true lever
+(see §8.4).
+
+### 9.7 Overfitting controls
 
 Dropout (0.5), global average pooling in the fusion head, training augmentation
 (random flips), early stopping (patience 5, best-weights restore), and a small
