@@ -16,6 +16,9 @@ REPLACEMENTS = {
     "∫": "∮".replace("∮", "S"), "∞": "inf", "∂": "d", "√": "sqrt", "∑": "sum",
     "−": "-", "₀": "0", "₁": "1", "₂": "2", "₃": "3", "ₐ": "a", "ᵢ": "i", "ₖ": "k",
     "…": "...", "—": "-", "–": "-", "►": ">", "─": "-", "✓": "[x]",
+    # emoji / symbols with no glyph in DejaVu Sans or Amiri (used as UI markers
+    # in the guides). Map to short text so the PDF renders cleanly.
+    "∝": "prop. to", "✅": "[x]", "🟢": "[on]", "🔴": "[off]", "🎮": "",
 }
 
 

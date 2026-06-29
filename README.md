@@ -77,10 +77,16 @@ quiz mode):
 ./run_demo.sh        # opens http://localhost:8501
 ```
 
-Nine sections: Home & Pipeline · The Problem · Signal Lab (Fourier vs Wavelet) ·
-Scalogram Studio · Dataset Explorer · The CNN Model · Results & Ablations · Test
-Lab · Concepts & Defense Prep. It degrades gracefully when data/models are absent
+Twelve sections: Home & Pipeline · The Problem · Motor & Control System · Fault
+Detection Methods · Signal Lab (Fourier vs Wavelet) · Scalogram Studio · Dataset
+Explorer · The CNN Model · Results & Ablations · Test Lab · Concepts & Defense Prep
+· Requirements Coverage. It degrades gracefully when data/models are absent
 (educational + synthetic parts always work).
+
+> **Page-by-page guide:** [`docs/dashboard-guide.md`](docs/dashboard-guide.md)
+> (`docs/build/dashboard-guide.pdf`; Arabic: `dashboard-guide-ar`) explains every
+> page — what it does, a plain-language version, and the **defense Q&A** an examiner
+> is likely to ask while on it.
 
 **GPU (optional).** The default install is CPU-only. For an NVIDIA GPU:
 `pip install 'tensorflow[and-cuda]==2.16.*'` — TensorFlow then auto-detects the

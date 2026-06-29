@@ -72,10 +72,11 @@ docs:
 	cd docs/presentation && pandoc slides.md -o ../build/slides.pptx
 	cd docs/presentation && pandoc slides.md -t beamer -o ../build/slides.pdf \
 		--pdf-engine=xelatex -H ../_figfit.tex -V mainfont="DejaVu Sans" -V monofont="DejaVu Sans Mono" -V fontsize=9pt
-	for f in build-walkthrough defense-study-guide run-guide; do \
-		pandoc docs/$$f.md -o docs/build/$$f.pdf --pdf-engine=xelatex -H docs/_figfit.tex \
+	for f in build-walkthrough defense-study-guide run-guide dashboard-guide; do \
+		$(PY) docs/_sanitize_for_pdf.py docs/$$f.md docs/_tmp.md; \
+		pandoc docs/_tmp.md -o docs/build/$$f.pdf --pdf-engine=xelatex -H docs/_figfit.tex \
 			-V geometry:margin=2.2cm -V fontsize=11pt -V mainfont="DejaVu Sans" \
-			-V monofont="DejaVu Sans Mono" --toc -V colorlinks=true; done
+			-V monofont="DejaVu Sans Mono" --toc -V colorlinks=true; rm -f docs/_tmp.md; done
 
 # Arabic deliverables (RTL). DOCX/PPTX keep original symbols; the PDF is built from a
 # prepped copy (_ar_pdf_prep: sanitize glyphs + force figures LTR/centered so RTL
@@ -97,7 +98,7 @@ docs-ar:
 	$(PY) docs/_ar_pdf_prep.py docs/presentation/slides-ar.md docs/presentation/_ar_tmp.md --beamer
 	cd docs/presentation && pandoc _ar_tmp.md -t beamer -o ../build/slides-ar.pdf --pdf-engine=xelatex -H ../_figfit.tex \
 		-V mainfont="Amiri" -V monofont="Amiri" -V fontsize=9pt; rm -f _ar_tmp.md
-	for f in build-walkthrough-ar defense-study-guide-ar; do \
+	for f in build-walkthrough-ar defense-study-guide-ar dashboard-guide-ar; do \
 		$(PY) docs/_sanitize_for_pdf.py docs/$$f.md docs/_tmp.md; \
 		pandoc docs/_tmp.md -o docs/build/$$f.pdf --pdf-engine=xelatex -H docs/_figfit.tex \
 			-V mainfont="Amiri" -V monofont="Amiri" -V geometry:margin=2.2cm -V fontsize=12pt \
